@@ -1,5 +1,6 @@
 ---
-一个构建 SaaS 和 web 应用的 Go 依赖库
+layout: default
+title:一个构建 SaaS 和 web 应用的 Go 依赖库
 ---
 
 # **GoTenancy** 使用说明
