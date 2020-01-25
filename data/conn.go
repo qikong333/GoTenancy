@@ -1,0 +1,32 @@
+package data
+
+import (
+	"database/sql"
+
+	_ "github.com/lib/pq"
+	"github.com/snowlyg/GoTenancy/data/postgres"
+)
+
+// Open creates the database connection and initialize the postgres services.
+func (db *DB) Open(driverName, dataSource string) error {
+	conn, err := sql.Open(driverName, dataSource)
+	if err != nil {
+		return err
+	}
+
+	if err := conn.Ping(); err != nil {
+		return err
+	}
+
+	db.Users = &postgres.Users{DB: conn}
+	db.Webhooks = &postgres.Webhooks{DB: conn}
+
+	db.Connection = conn
+
+	db.DatabaseName = "GoTenancy"
+	return nil
+}
+
+func (db *DB) Close() {
+	db.Connection.Close()
+}
