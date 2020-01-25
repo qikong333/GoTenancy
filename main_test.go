@@ -11,22 +11,17 @@ import (
 var db *data.DB
 
 func TestMain(m *testing.M) {
-	ds := "user=postgres password=postgres dbname=test sslmode=disable"
+	ds := "./data/test.db"
 
 	db = &data.DB{}
 	if err := db.Open("postgres", ds); err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
-	if err := db.Connection.Ping(); err != nil {
-		log.Fatal(err)
-	}
-
-	// we make sure to clean everything before starting the tests
-	if _, err := db.Connection.Exec("DELETE FROM GoTenancy_accounts;"); err != nil {
-		log.Fatal(err)
-	}
+	//我们确认在开始测试前清除了所有数据
+	//if _, err := db.Connection.Exec("DELETE FROM GoTenancy_accounts;"); err != nil {
+	//	log.Fatal(err)
+	//}
 
 	retval := m.Run()
 	os.Exit(retval)

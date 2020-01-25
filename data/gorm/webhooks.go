@@ -1,13 +1,14 @@
-package postgres
+package gorm
 
 import (
 	"database/sql"
 
+	"github.com/jinzhu/gorm"
 	"github.com/snowlyg/GoTenancy/model"
 )
 
 type Webhooks struct {
-	DB *sql.DB
+	DB *gorm.DB
 }
 
 func (wh *Webhooks) Add(accountID int64, events, url string) error {

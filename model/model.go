@@ -2,22 +2,25 @@ package model
 
 import (
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 // Account 表示一个账号的基本信息
 type Account struct {
-	ID             int64     `json:"id"`
-	Email          string    `json:"email"`
-	StripeID       string    `json:"stripeId"`
-	SubscriptionID string    `json:"subscriptionId"`
-	Plan           string    ` json:"plan"`
-	IsYearly       bool      `json:"isYearly"`
-	SubscribedOn   time.Time `json:"subscribed"`
-	Seats          int       ` json:"seats"`
-	TrialInfo      Trial     ` json:"trial"`
-	IsActive       bool      ` json:"active"`
+	gorm.Model
 
-	Users []User ` json:"users"`
+	Email          string `gorm:"type:varchar(255);column:email"`
+	StripeID       string `gorm:"type:varchar(255);column:stripeId"`
+	SubscriptionID string `gorm:"type:varchar(255);column:subscriptionId"`
+	Plan           string `gorm:"type:varchar(255);column:plan"`
+	IsYearly       bool
+	SubscribedOn   time.Time `gorm:"column:subscribed"`
+	Seats          int
+	TrialInfo      Trial `gorm:"type:longText;column:trial"`
+	IsActive       bool
+
+	Users []User
 }
 
 // IsPaid 账号是否是付费用户
@@ -49,40 +52,44 @@ const (
 
 // User 表示一个用户
 type User struct {
-	ID           int64         `json:"id"`
-	AccountID    int64         ` json:"accountId"`
-	Email        string        `json:"email"`
-	Password     string        ` json:"-"`
-	Token        string        ` json:"token"`
-	Role         Roles         ` json:"role"`
-	AccessTokens []AccessToken ` json:"accessTokens"`
+	gorm.Model
+
+	AccountID    int64
+	Email        string `gorm:"type:varchar(255);column:email"`
+	Password     string `gorm:"type:varchar(255);column:-"`
+	Token        string `gorm:"type:varchar(255);column:token"`
+	Role         Roles
+	AccessTokens []AccessToken
 }
 
 // AccessToken 表示访问 tokens.
 type AccessToken struct {
-	ID     int64  ` json:"id"`
-	UserID int64  ` json:"userId"`
-	Name   string ` json:"name"`
-	Token  string ` json:"token"`
+	gorm.Model
+
+	UserID int64
+	Name   string `gorm:"type:varchar(255);column:name"`
+	Token  string `gorm:"type:varchar(255);column:token"`
 }
 
 // APIRequest 表示单个 API 请求。
 type APIRequest struct {
-	ID         int64     ` json:"id"`
-	AccountID  int64     ` json:"accountId"`
-	UserID     int64     ` json:"userId"`
-	URL        string    `json:"url"`
-	Requested  time.Time ` json:"requested"`
-	StatusCode int       ` json:"statusCode"`
-	RequestID  string    ` json:"reqId"`
+	gorm.Model
+
+	AccountID  int64
+	UserID     int64
+	URL        string `gorm:"type:varchar(255);column:url"`
+	Requested  time.Time
+	StatusCode int
+	RequestID  string `gorm:"type:varchar(255);column:reqId"`
 }
 
 // Webhook 表示网络订阅。
 type Webhook struct {
-	ID        int64     `json:"id"`
-	AccountID int64     `json:"accountId"`
-	EventName string    `json:"event"`
-	TargetURL string    `json:"url"`
-	IsActive  bool      `json:"active"`
-	Created   time.Time `json:"created"`
+	gorm.Model
+
+	AccountID int64
+	EventName string `gorm:"type:varchar(255);column:event"`
+	TargetURL string `gorm:"type:varchar(255);column:url"`
+	IsActive  bool
+	Created   time.Time
 }

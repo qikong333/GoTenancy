@@ -1,11 +1,11 @@
 package data
 
 import (
-	"database/sql"
 	"fmt"
 	"strconv"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"github.com/snowlyg/GoTenancy/model"
 )
 
@@ -14,8 +14,8 @@ import (
 type DB struct {
 	// DatabaseName 数据库名称
 	DatabaseName string
-	// Connection 是对数据库连接的引用。
-	Connection *sql.DB
+	// Connection据库连接的引用。
+	Connection *gorm.DB
 
 	// Users 包含账号, 用户和开票相关访问方法的数据
 	Users UserServices

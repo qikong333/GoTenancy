@@ -1,29 +1,30 @@
 package data
 
 import (
-	"database/sql"
+	"errors"
 
-	_ "github.com/lib/pq"
-	"github.com/snowlyg/GoTenancy/data/postgres"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/snowlyg/GoTenancy/model"
 )
 
-// Open 创建数据库连接并且初始化 postgres 服务。
+// Open 创建数据库连接并且初始化。
 func (db *DB) Open(driverName, dataSource string) error {
-	conn, err := sql.Open(driverName, dataSource)
+	var err error
+	db.Connection, err = gorm.Open(driverName, dataSource)
 	if err != nil {
-		return err
+		return errors.New("failed to connect database")
 	}
+	//defer db.Connection.Close()
 
-	if err := conn.Ping(); err != nil {
-		return err
-	}
-
-	db.Users = &postgres.Users{DB: conn}
-	db.Webhooks = &postgres.Webhooks{DB: conn}
-
-	db.Connection = conn
-
-	db.DatabaseName = "GoTenancy"
+	// Migrate the schema
+	db.Connection.AutoMigrate(
+		&model.AccessToken{},
+		&model.Account{},
+		&model.User{},
+		&model.APIRequest{},
+		&model.Webhook{},
+	)
 	return nil
 }
 

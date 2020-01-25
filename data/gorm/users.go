@@ -1,15 +1,15 @@
-package postgres
+package gorm
 
 import (
-	"database/sql"
 	"fmt"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"github.com/snowlyg/GoTenancy/model"
 )
 
 type Users struct {
-	DB *sql.DB
+	DB *gorm.DB
 }
 
 func (u *Users) SignUp(email, password string) (*model.Account, error) {
