@@ -16,17 +16,17 @@ import (
 	"github.com/stripe/stripe-go/sub"
 )
 
-// SetStripeKey sets the Stripe Key.
+// Stripe 设置条纹码
 func SetStripeKey(key string) {
 	stripe.Key = key
 }
 
-// Billing handles everything related to the billing requests
+// Billing 处理所有和 billing 相关请求
 type Billing struct {
 	DB *data.DB
 }
 
-// BillingOverview represents if an account is a paid customer or not
+// BillingOverview 表示帐户是否为付费客户
 type BillingOverview struct {
 	Account        *model.Account    `json:"account"`
 	StripeID       string            `json:"stripeId"`
@@ -41,7 +41,7 @@ type BillingOverview struct {
 	NextInvoice    *stripe.Invoice   `json:"nextInvoice"`
 }
 
-// BillingCardData represents a Stripe credit card
+// BillingCardData 表示条码信用卡
 type BillingCardData struct {
 	ID         string `json:"id"`
 	Name       string `json:"name"`
@@ -90,10 +90,10 @@ func (b Billing) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b Billing) Overview(accountID int64) (*BillingOverview, error) {
-	// this struct will be returned should we be a paid customer or not
+	//本结构将返回我们是否是付费客户
 	ov := &BillingOverview{}
 
-	// Get the current account
+	// 获取当前账号
 	account, err := b.DB.Users.GetDetail(accountID)
 	if err != nil {
 		return nil, fmt.Errorf("unable to find this account: %v", err)
@@ -102,7 +102,7 @@ func (b Billing) Overview(accountID int64) (*BillingOverview, error) {
 	ov.Account = account
 	ov.Logins = account.Users
 
-	// get all logins for user roles
+	// 获取登陆用户所有角色
 	for _, l := range account.Users {
 		if l.Role < model.RoleFree {
 			ov.Seats++
@@ -112,8 +112,8 @@ func (b Billing) Overview(accountID int64) (*BillingOverview, error) {
 	if len(account.StripeID) == 0 {
 		ov.IsNew = true
 
-		// if they are on trial, we set the current plan to
-		// that so the UI can based permissions on that plan.
+		//如果他们正在试用，我们设置当前计划
+		//以便 UI 可以基于该计划的权限。
 		if account.TrialInfo.IsTrial {
 			if p, ok := data.GetPlan(account.TrialInfo.Plan); ok {
 				ov.CurrentPlan = &p
@@ -125,7 +125,7 @@ func (b Billing) Overview(accountID int64) (*BillingOverview, error) {
 		return ov, nil
 	}
 
-	// getting stripe customer
+	// 获取条码客户
 	cus, err := customer.Get(account.StripeID, nil)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get stripe customer: %v", err)
@@ -178,23 +178,23 @@ func (b Billing) userRoleChanged(db data.DB, accountID int64, oldRole, newRole m
 		return false, err
 	}
 
-	// if this is a paid account
+	// 如果这是一个付费帐户
 	if acct.IsPaid() {
-		// if they were a free user
+		// 如果他们是一个免费的用户
 		if oldRole == model.RoleFree {
-			// and are now a paid user, we need to +1 qty and prepare the invoice
+			// 现在是一个付费用户，我们需要 +1 qty 并准备发票
 			if newRole == model.RoleAdmin || newRole == model.RoleUser {
 				paid = true
 
-				// we increase the seats number for this account
+				// 我们增加这个帐户的座位数
 				acct.Seats++
 
-				// try to change their subscription (+1 qty)
+				// 尝试更改其订阅 (+1 qty)
 				if err = b.changeQuantity(acct.StripeID, acct.SubscriptionID, acct.Seats); err != nil {
 					return
 				}
 
-				// ensure that the charges will be immediate and not on next billing date
+				// 用是即时的，而不是在下一个计费日期
 				if err := queue.Enqueue(queue.TaskCreateInvoice, acct.StripeID); err != nil {
 					return paid, err
 				}
@@ -204,7 +204,7 @@ func (b Billing) userRoleChanged(db data.DB, accountID int64, oldRole, newRole m
 				}
 			}
 		} else {
-			// they were a paid user, now they are set as free
+			// 如果这是一个付费帐户，现在把它设置为免费用户
 			if newRole == model.RoleFree {
 				acct.Seats--
 
@@ -221,7 +221,7 @@ func (b Billing) userRoleChanged(db data.DB, accountID int64, oldRole, newRole m
 	return false, nil
 }
 
-// BillingNewCustomer represents data sent to api for creating a new customer
+// BillingNewCustomer 表示发送到 api 以创建新客户的数据
 type BillingNewCustomer struct {
 	AccountID   int64
 	Email       string
@@ -263,7 +263,7 @@ func (b Billing) Start(bc BillingNewCustomer) error {
 		plan += "_yearly"
 	}
 
-	// we get the current set of pricing plans
+	// 我们得到当前的定价计划集
 	currentPlans := data.GetPlans("current")
 	var bp data.BillingPlan
 	for _, p := range currentPlans {
@@ -307,7 +307,7 @@ func (b Billing) Start(bc BillingNewCustomer) error {
 	return nil
 }
 
-// Convert upgrades an existing trial account to a paid account.
+// Convert 更新一个使用账号为付费账号
 func (b Billing) Convert(bc BillingNewCustomer) error {
 	acct, err := b.DB.Users.GetDetail(bc.AccountID)
 	if err != nil {
@@ -327,8 +327,8 @@ func (b Billing) Convert(bc BillingNewCustomer) error {
 	}
 
 	seats := bc.Quantity
-	// IsPerSeat means based on number of users.
-	// Otherwise, we're using the bc.Quantity field
+	//IsPerSeat 表示基于用户数量。
+	//否则，我们使用 bc。数量字段
 	if bc.IsPerSeat {
 		seats = 0
 		for _, u := range acct.Users {
@@ -343,7 +343,7 @@ func (b Billing) Convert(bc BillingNewCustomer) error {
 		plan += "_yearly"
 	}
 
-	// we get the current set of pricing plans
+	//我们得到当前的定价计划集
 	currentPlans := data.GetPlans("current")
 	var bp data.BillingPlan
 	for _, p := range currentPlans {
@@ -428,9 +428,9 @@ func (b Billing) changePlan(w http.ResponseWriter, r *http.Request) {
 		currentLevel = 3
 	}
 
-	// did they cancelled
+	// 是否取消
 	if newLevel == 0 {
-		// we need to cancel their subscriptions
+		// 我们需要取消他们的订阅
 		if _, err := sub.Cancel(account.SubscriptionID, nil); err != nil {
 			Respond(w, r, http.StatusInternalServerError, err)
 			return
@@ -459,7 +459,7 @@ func (b Billing) changePlan(w http.ResponseWriter, r *http.Request) {
 			Quantity: &seatsptr,
 		}
 
-		// if we upgrade we need to change billing cycle date
+		// 如果我们升级，我们需要改变计费周期日期
 		upgraded := false
 		if newLevel > currentLevel {
 			upgraded = true
@@ -468,7 +468,7 @@ func (b Billing) changePlan(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if upgraded {
-			// queue an invoice create for this upgrade
+			// 队列为此升级创建的发票
 			queue.Enqueue(queue.TaskCreateInvoice, account.StripeID)
 		}
 
@@ -619,24 +619,24 @@ func (b Billing) getNextInvoice(w http.ResponseWriter, r *http.Request) {
 	Respond(w, r, http.StatusOK, i)
 }
 
-// StripeWebhook is used to grab data sent by Stripe for a webhook
+// StripeWebhook 用于抓取条码为 Web hook 发送的数据
 type StripeWebhook struct {
 	Event stripe.Event `json:"event"`
 }
 
-// WebhookData used when stripe webhook is call
+// WebhookData 当条码 Web hook 调用时使用
 type WebhookData struct {
 	ID   string            `json:"id"`
 	Type string            `json:"type"`
 	Data WebhookDataObject `json:"data"`
 }
 
-// WebhookDataObject is the container for the object received
+// WebhookDataObject 是接收对象的容器
 type WebhookDataObject struct {
 	Object WebhookDataObjectData `json:"object"`
 }
 
-// WebhookDataObjectData is the object being sent by stripe
+// WebhookDataObjectData 是被条码发送的对象
 type WebhookDataObjectData struct {
 	ID           string `json:"id"`
 	Customer     string `json:"customer"`
@@ -648,7 +648,7 @@ func (b Billing) stripe(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	db := ctx.Value(ContextDatabase).(*data.DB)
 
-	// no matter what happen, Stripe wants us to send a 200
+	// 无论发生什么，条码希望我们发送200
 	defer w.Write([]byte("ok"))
 
 	var data WebhookData
@@ -670,7 +670,7 @@ func (b Billing) stripe(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// check if it's a failed payment_succeeded
+		// 检查是否支付失败
 		account, err := db.Users.GetByStripe(stripeID)
 		if err != nil {
 			log.Println(fmt.Errorf("no customer matches stripe id %s", stripeID))
@@ -701,7 +701,7 @@ func (b Billing) cancel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// SendMail would be call here passing the reason
+	// SendMail 将调用这里传递的原因
 
 	account, err := db.Users.GetDetail(keys.AccountID)
 	if err != nil {

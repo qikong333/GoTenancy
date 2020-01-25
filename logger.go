@@ -11,11 +11,9 @@ import (
 	"github.com/snowlyg/GoTenancy/model"
 )
 
-// Logger is a middleware that log requests information to stdout.
-//
-// If the request failed with a status code >= 300, a dump of the
-// request will be saved into the cache store. You can investigate and replay
-// the request in a development environment using this tool https://github.com/dstpierre/httpreplay.
+// Logger 是一个记录请求信息到终端输出的中间件
+// 如果是一个状态码大于 300 的错误请求，请求的打印将会保存到缓存中。
+// 你可以在开发环境下使用 https://github.com/dstpierre/httpreplay 工具查看和重复请求。
 func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), ContextRequestStart, time.Now())

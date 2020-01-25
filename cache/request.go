@@ -8,12 +8,12 @@ import (
 	"github.com/go-redis/redis"
 )
 
-// CountWebRequest returns the number of failed web request pending for analysis.
+// CountWebRequest 返回待分析的失败 Web 请求数。
 func CountWebRequest() (int64, error) {
 	return rc.LLen("reqs").Result()
 }
 
-// GetWebRequest returns the next web request logged from list.
+// GetWebRequest 返回从列表中记录的下一个 Web 请求。
 func GetWebRequest(first bool) (reqID string, b []byte, err error) {
 	var s string
 	if first {
@@ -40,7 +40,7 @@ func GetWebRequest(first bool) (reqID string, b []byte, err error) {
 	return
 }
 
-// LogWebRequest saves a web request for further analysis.
+// LogWebRequest 保存 Web 请求以进行进一步分析。
 func LogWebRequest(reqID string, b []byte) error {
 	r := []byte(fmt.Sprintf("\n|\n%s", reqID))
 	b = append(b, r...)

@@ -9,23 +9,21 @@ import (
 	"github.com/snowlyg/GoTenancy/model"
 )
 
-// DB is a database agnostic abstraction that contains a reference to
-// the database connection.
-//
-// At this moment Postgres and an in-memory data provider are supported.
+// DB 是一个包含数据库连接引用的数据库抽象接口
+// 目前，支持Postgres和内存数据提供程序。
 type DB struct {
-	// DatabaseName is the name of the database used.
+	// DatabaseName 数据库名称
 	DatabaseName string
-	// Connection is the reference to the database connection.
+	// Connection 是对数据库连接的引用。
 	Connection *sql.DB
 
-	// Users contains the data access functions related to account, user and billing.
+	// Users 包含账号, 用户和开票相关访问方法的数据
 	Users UserServices
-	// Webhooks contains the data access functions related to managing Webhooks.
+	// Webhooks 包含管理 Webhooks 相关访问方法的数据。
 	Webhooks WebhookServices
 }
 
-// UserServices is an interface that contians all functions related to account, user and billing.
+// UserServices 是一个包含账号, 用户和开票相关所有方法的接口
 type UserServices interface {
 	SignUp(email, password string) (*model.Account, error)
 	ChangePassword(id, accountID int64, passwd string) error
@@ -46,7 +44,7 @@ type AdminServices interface {
 	LogRequests(reqs []model.APIRequest) error
 }
 
-// WebhookServices is an interface that contains all functions to manage webhook.
+// WebhookServices 一个包含管理 webhook 所有方法的接口
 type WebhookServices interface {
 	Add(accountID int64, events, url string) error
 	List(accountID int64) ([]model.Webhook, error)
@@ -54,7 +52,7 @@ type WebhookServices interface {
 	AllSubscriptions(event string) ([]model.Webhook, error)
 }
 
-// NewID returns a per second unique string based on account and user ids.
+// NewID 根据帐户和用户ID返回每秒的唯一字符串。
 func NewID(accountID, userID int64) string {
 	n := time.Now()
 	i, _ := strconv.Atoi(

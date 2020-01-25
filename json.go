@@ -7,23 +7,23 @@ import (
 	"net/http"
 )
 
-// Respond return an strruct with specific status as JSON.
+// Respond 返回一个带有特殊状态的 strruct JSON。
 //
-// If data is an error it will be wrapped in a generic JSON object:
+// 如果数据是错误它将会被打包成一个常见的 JSON 对象：
 //
 // 	{
 // 		"status": 401,
 // 		"error": "the result of data.Error()"
 // 	}
 //
-// Example usage:
+// 使用实例:
 //
 // 	func handler(w http.ResponseWriter, r *http.Request) {
 // 		task := Task{ID: 123, Name: "My Task", Done: false}
 // 		GoTenancy.Respond(w, r, http.StatusOK, task)
 // 	}
 func Respond(w http.ResponseWriter, r *http.Request, status int, data interface{}) error {
-	// change error into a real JSON serializable object
+	// 转换错误到一个真实的 JSON 序列化对象中
 	if e, ok := data.(error); ok {
 		var tmp = new(struct {
 			Status string `json:"status"`
@@ -42,7 +42,7 @@ func Respond(w http.ResponseWriter, r *http.Request, status int, data interface{
 		return err
 	}
 
-	// write the request ID
+	// 获取请求 ID
 	reqID, ok := r.Context().Value(ContextRequestID).(string)
 	if ok {
 		w.Header().Set("X-Request-ID", reqID)
@@ -57,9 +57,7 @@ func Respond(w http.ResponseWriter, r *http.Request, status int, data interface{
 	return nil
 }
 
-// ParseBody parses the request JSON body into a struct.ParseBody
-//
-// Example usage:
+// ParseBody 解析请求的 JSON 主体到一个 struct.ParseBody 中。
 //
 // 	func handler(w http.ResponseWriter, r *http.Request) {
 // 		var task Task

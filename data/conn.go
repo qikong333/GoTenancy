@@ -7,7 +7,7 @@ import (
 	"github.com/snowlyg/GoTenancy/data/postgres"
 )
 
-// Open creates the database connection and initialize the postgres services.
+// Open 创建数据库连接并且初始化 postgres 服务。
 func (db *DB) Open(driverName, dataSource string) error {
 	conn, err := sql.Open(driverName, dataSource)
 	if err != nil {

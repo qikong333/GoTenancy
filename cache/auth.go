@@ -9,10 +9,10 @@ import (
 	"github.com/go-redis/redis"
 )
 
-// Auth is used to get/set authentication related keys
+// Auth 用于获取/设置身份验证相关密钥
 type Auth struct{}
 
-// Exists returns the authentication from cache.
+// Exists 从缓存返回身份验证。
 func (x *Auth) Exists(key string, v interface{}) error {
 	s, err := rc.Get(key).Result()
 	if err != nil {
@@ -26,7 +26,7 @@ func (x *Auth) Exists(key string, v interface{}) error {
 	return dec.Decode(v)
 }
 
-// Set cache this key (authentication) for 30 minutes.
+// Set 缓存此密钥（身份验证）30 分钟。
 func (x *Auth) Set(key string, v interface{}, expiration time.Duration) error {
 	buf := bytes.NewBuffer(nil)
 	enc := gob.NewEncoder(buf)

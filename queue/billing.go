@@ -21,9 +21,9 @@ func (b *Billing) Run(qt QueueTask) error {
 		return fmt.Errorf("the data should be a stripe customer ID")
 	}
 
-	// we delay execution for 2 hours to let add/remove
-	// operations in between creating the invoice
-	// since we're on a go routine we can use a time.Sleep
+	//我们将执行延迟2个小时，
+	//以便在创建发票之间进行添加/删除操作，
+	//因为我们正在执行 go routine，因此我们可以使用 time.Sleep。
 	time.Sleep(2 * time.Hour)
 
 	p := &stripe.InvoiceParams{Customer: &id}

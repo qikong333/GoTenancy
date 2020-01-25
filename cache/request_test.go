@@ -12,7 +12,7 @@ func Test_Request_Log(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// we want the last one inserted so we can test
+	// 我们希望最后一个插入，所以我们可以测试
 	reqID, b, err := GetWebRequest(false)
 	if err != nil {
 		t.Error(err)

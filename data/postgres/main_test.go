@@ -1,11 +1,10 @@
 package postgres
 
 import (
+	"database/sql"
 	"log"
 	"os"
 	"testing"
-
-	"database/sql"
 
 	_ "github.com/lib/pq"
 )
@@ -24,7 +23,7 @@ func TestMain(m *testing.M) {
 		log.Fatal(err)
 	}
 
-	// we make sure to clean everything before starting the tests
+	//我们确认在开始测试前清除了所有数据
 	_, err = conn.Exec("DELETE FROM GoTenancy_accounts;")
 	if err != nil {
 		log.Fatal(err)

@@ -26,11 +26,11 @@ var (
 	executors map[TaskID]TaskExecutor
 )
 
-// New initializes the queue tasks.
+// New 初始化队列任务
 func New(rc *redis.Client, isDev bool, ex map[TaskID]TaskExecutor) {
 	client = rc
 
-	// built-in executor
+	// 内置执行器
 	emailer = &Email{}
 	biller = &Billing{}
 	if isDev {
@@ -42,8 +42,7 @@ func New(rc *redis.Client, isDev bool, ex map[TaskID]TaskExecutor) {
 	executors = ex
 }
 
-// SetAsSubscriber makes this instance a Pub/Sub subscriber. Each message queued
-// will be processed by this instance.
+// SetAsSubscriber 设置一个处理消息队列的发布/订阅订阅者实例 t
 func SetAsSubscriber() {
 	scheduler = cron.New()
 
@@ -60,7 +59,7 @@ func SetAsSubscriber() {
 		log.Fatal("unable to receive from pubsub channel", err)
 	}
 
-	// we initialize our scheduler (cron)
+	// 我们初始化调度程序 (cron)
 	go setupCron()
 
 	ch := pubsub.Channel()
@@ -133,7 +132,7 @@ func parseTask(s string) (exp string, url string) {
 	return
 }
 
-// Enqueue adds a task to the queue.
+// Enqueue 增加任务到队列
 func Enqueue(id TaskID, data interface{}) error {
 	qt := QueueTask{
 		ID:      id,

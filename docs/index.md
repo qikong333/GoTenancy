@@ -1,36 +1,27 @@
 ---
-layout: default
-title: A Go library to build SaaS and web app
+一个构建 SaaS 和 web 应用的 Go 依赖库
 ---
 
-# User documentation for **GoTenancy** library
+# **GoTenancy** 使用说明
 
-> This is a work in progress :). Please check the 
-> [GoDoc](https://godoc.org/github.com/dstpierre/GoTenancy).
+> 详细文档
+> [GoDoc](https://godoc.org/github.com/snowlyg/GoTenancy).
 
-### What and why?
 
-In September 2018 I published a book called "[Build a SaaS app in Go](https://buildsaasappingo.com)" after building 
-two SaaS with Go and a React front-end. I thought that it might be helpful to extract common pieces into a reusable 
-Go library.
+### 文档目录
 
-If you want to have all the details and support the project, you can buy the book which still contains up-to-date 
-information about building a SaaS in Go.
+**主要结构**
 
-### Table of content
+* [配置文件](config.md)
+* [路由](routing.md)
+* [请求/响应](req-resp.md)
+* [自定义处理程序](handlers.md)
 
-**Main concepts**
+**内置中间件和模型**
 
-* [Configuration file](config.md)
-* [Routing](routing.md)
-* [Request/Response](req-resp.md)
-* [Defining your handlers](handlers.md)
-
-**Built-in middlewares and modules**
-
-* [Database & migration](db.md)
-* [Membership](membership.md)
-* [Billing & subscription](billing.md)
-* [Caching](caching.md)
-* [Throttling & rate limit](limits.md)
-* [Queue & background tasks](queue-tasks.md)
+* [数据库 & 迁移](db.md)
+* [会员](membership.md)
+* [开票 & 订阅](billing.md)
+* [缓存](caching.md)
+* [节流 & 速率限制](limits.md)
+* [队列 & 后台任务](queue-tasks.md)

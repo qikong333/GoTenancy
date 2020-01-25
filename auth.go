@@ -14,7 +14,7 @@ import (
 	"github.com/snowlyg/GoTenancy/model"
 )
 
-// Auth represents an authenticated user.
+// Auth 表示一个已认证用户
 type Auth struct {
 	AccountID int64
 	UserID    int64
@@ -22,22 +22,22 @@ type Auth struct {
 	Role      model.Roles
 }
 
-// Authenticator middleware used to authenticate requests.
+// Authenticator 中间件应用于认证请求
 //
-// There are 4 ways to authenticate a request:
-// 1. Via an HTTP header named X-API-KEY.
-// 2. Via a querystring parameter named "key=token".
-// 3. Via a cookie named X-API-KEY.
-// 4. Via basic authentication.
+// 有 4 种方法去认证一个请求:
+// 1. 通过一个 X-API-KEY HTTP 请求头。
+// 2. 通过一个 "key=token" 请求参数。
+// 3. 通过一个 X-API-KEY cookie。
+// 4. 通过基础认证
 //
-// For routes with MinimumRole set as model.RolePublic there's no authentication performed.
+// 对于将最小角色设置为 model.RolePublic 的路由，将不会执行身份验证。
 func Authenticator(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		mr := ctx.Value(ContextMinimumRole).(model.Roles)
 
 		key, pat, err := extractKeyFromRequest(r)
-		// if there's no authentication or an error
+		// 没有认证，或者是一个错误
 		if mr > model.RolePublic {
 			if len(key) == 0 || err != nil {
 				http.Redirect(w, r, "/users/login", http.StatusSeeOther)
@@ -47,7 +47,7 @@ func Authenticator(next http.Handler) http.Handler {
 
 		ca := &cache.Auth{}
 
-		// do we have this key on cache already
+		// key 已经被缓存
 		var a Auth
 		if err := ca.Exists(key, &a); err != nil {
 			log.Println("error while trying to get cache auth", err)
@@ -56,8 +56,7 @@ func Authenticator(next http.Handler) http.Handler {
 		if len(a.Email) > 0 {
 			ctx = context.WithValue(ctx, ContextAuth, a)
 		} else {
-			// if the route required public access we do not
-			// perform any authentication.
+			// 如果是公共路由，则不需要任何验证
 			if mr == model.RolePublic {
 				next.ServeHTTP(w, r.WithContext(ctx))
 				return
@@ -82,13 +81,13 @@ func Authenticator(next http.Handler) http.Handler {
 			a.UserID = usr.ID
 			a.Role = usr.Role
 
-			// save it to cache
+			// 保存到缓存
 			ca.Set(key, a, 30*time.Minute)
 
 			ctx = context.WithValue(ctx, ContextAuth, a)
 		}
 
-		// we authorize the request
+		// 认证请求
 		if a.Role < mr {
 			http.Redirect(w, r, "/users/login", http.StatusSeeOther)
 			return
@@ -99,23 +98,23 @@ func Authenticator(next http.Handler) http.Handler {
 }
 
 func extractKeyFromRequest(r *http.Request) (key string, pat bool, err error) {
-	// first let's look if the X-API-KEY is present in the HTTP header
+	// 首先，让我们看看是否在 HTTP 标头中存在 X-API-KEY
 	key = r.Header.Get("X-API-KEY")
 	if len(key) > 0 {
 		return
 	}
 
-	// check the query string
+	// 检查查询字符串
 	key = r.URL.Query().Get("key")
 	if len(key) > 0 {
 		return
 	}
 
-	// check for cookie
+	// 检查 cookie
 	ck, er := r.Cookie("X-API-KEY")
 	if er != nil {
-		// If it's ErrNoCookie we must continue
-		// otherwise this is a legit error
+		//如果是 ErrNoCookie，我们必须继续，
+		//否则这是一个合法的错误
 		if er != http.ErrNoCookie {
 			err = er
 			return
@@ -125,7 +124,7 @@ func extractKeyFromRequest(r *http.Request) (key string, pat bool, err error) {
 		return
 	}
 
-	// check if we are supplying basic auth
+	// 检查是否支持基础认证
 	authorization := r.Header.Get("Authorization")
 	s := strings.SplitN(authorization, " ", 2)
 	if len(s) != 2 {

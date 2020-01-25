@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 )
 
-// LogRequest adds a new item to the list of pending request to be logged.
+// LogRequest 将新项目添加到要记录的挂起请求列表中。
 func LogRequest(v interface{}) error {
 	buf := bytes.NewBuffer(nil)
 	enc := gob.NewEncoder(buf)
@@ -19,7 +19,7 @@ func LogRequest(v interface{}) error {
 	return nil
 }
 
-// DequeueRequests returns all pending requests ready to be inserted into the database.
+// DequeueRequests 返回所有准备插入到数据库中的挂起请求。
 func DequeueRequests() ([]string, error) {
 	return rc.LRange("reqlog", 0, -1).Result()
 }

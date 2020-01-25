@@ -29,15 +29,11 @@ func init() {
 	rc = c
 }
 
-// New initializes the queue service via the queue.New function.
-//
-// The queueProcessor flag indicates if this instance will act
-// as the Pub/Sub subscriber. There must be only one subscriber.
-//
-// The ex parameter map[queue.TaskID]queue.Executor allow you to supply
-// custom executors for your own custom task. A TaskExecutor must satisfy
-// this interface.
-//
+// New 通过 queue.New 函数初始化队列服务。
+// queueProcessor 标识表明是否实例执行发布/订阅 订阅者。只能有一个订阅者。
+// ex 参数 map[queue.TaskID]queue.Executor 允许你给自定义的任务提供
+// 自定义执行者。 TaskExecutor 必须满足
+// 此接口。
 // 	type TaskExecutor interface {
 // 		Run(t QueueTask) error
 // 	}

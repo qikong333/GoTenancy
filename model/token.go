@@ -10,12 +10,12 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-// NewToken returns a token combining an id with a unique identifier.
+// NewToken 返回将ID与唯一标识符结合在一起的令牌。
 func NewToken(id int64) string {
 	return fmt.Sprintf("%d|%s", id, uuid.NewV4().String())
 }
 
-// ParseToken returns the id and uuid for a given token.
+// ParseToken 返回给定令牌的id和uuid。
 func ParseToken(token string) (int64, string) {
 	pairs := strings.Split(token, "|")
 	if len(pairs) != 2 {
@@ -29,7 +29,7 @@ func ParseToken(token string) (int64, string) {
 	return id, pairs[1]
 }
 
-// NewFriendlyID returns a ~somewhat unique friendly id.
+// NewFriendlyID 返回一个唯一的友好ID。
 func NewFriendlyID(id int64, key string) string {
 	n := time.Now()
 	i, _ := strconv.Atoi(

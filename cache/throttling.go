@@ -5,13 +5,13 @@ import (
 	"time"
 )
 
-// Throttle increments the requests count for a specific key and set expiration if it's a new period.
+// Throttle 增加特定密钥的请求计数，并设置过期（如果是新期间）。
 func Throttle(key string, expire time.Duration) (int64, error) {
 	key = fmt.Sprintf("%s_t", key)
 	return increaseThrottle(key, expire)
 }
 
-// RateLimit increments the requests count for a specific key and set expiration if it's a new period.
+// RateLimit 增加特定密钥的请求计数，并设置过期（如果是新期间）。
 func RateLimit(key string, expire time.Duration) (int64, error) {
 	key = fmt.Sprintf("%s_rl", key)
 	return increaseThrottle(key, expire)
@@ -24,10 +24,10 @@ func increaseThrottle(key string, expire time.Duration) (int64, error) {
 	}
 
 	if i == 1 {
-		// the key was created, we set the expire
+		// 密钥已创建，我们设置过期
 		ok, err := rc.Expire(key, expire).Result()
 		if err != nil {
-			// try to remove the key
+			// 尝试删除密钥
 			if _, e := rc.Del(key).Result(); err != nil {
 				return 0, fmt.Errorf("unable to remove key %s: %s and expire failed: %s", key, e.Error(), err.Error())
 			}
@@ -40,14 +40,14 @@ func increaseThrottle(key string, expire time.Duration) (int64, error) {
 	return i, nil
 }
 
-// GetThrottleExpiration returns the duration before a key expire for throttling.
+// GetThrottleExpiration 返回密钥过期之前的限制持续时间。
 func GetThrottleExpiration(key string) (time.Duration, error) {
 	key = fmt.Sprintf("%s_t", key)
 
 	return rc.TTL(key).Result()
 }
 
-// GetRateLimitExpiration returns the duration before a key expire for rate limit.
+// GetRateLimitExpiration 返回密钥过期之前的限制持续时间。
 func GetRateLimitExpiration(key string) (time.Duration, error) {
 	key = fmt.Sprintf("%s_rl", key)
 

@@ -5,7 +5,6 @@ import (
 	"strings"
 )
 
-// Cors enables calls via remote origin to handle external JavaScript calls mainly.
 func Cors(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		headers := w.Header()

@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// Account represents the basic information for an account.
+// Account 表示一个账号的基本信息
 type Account struct {
 	ID             int64     `json:"id"`
 	Email          string    `json:"email"`
@@ -20,12 +20,12 @@ type Account struct {
 	Users []User ` json:"users"`
 }
 
-// IsPaid returns if this account is a paying customer.
+// IsPaid 账号是否是付费用户
 func (a *Account) IsPaid() bool {
 	return len(a.StripeID) > 0 && len(a.SubscriptionID) > 0
 }
 
-// Trial represents the trial information for an account.
+// Trial 表示一个账号的使用信息
 type Trial struct {
 	IsTrial  bool      ` json:"trial"`
 	Plan     string    ` json:"plan"`
@@ -33,22 +33,21 @@ type Trial struct {
 	Extended int       ` json:"extended"`
 }
 
-// Roles are used with user access control and authorization. You may add custom roles in-between the
-// default ones.
+// Roles 和用户访问控制和认证一起使用， 你可以在默认的角色中自定义自己的角色。
 type Roles int
 
 const (
-	// RolePublic for publicly accessible routes.
+	// RolePublic 公共路由访问
 	RolePublic Roles = 0
-	// RoleFree for free user.
+	// RoleFree 免费用户
 	RoleFree = 10
-	// RoleUser for standard user.
+	// RoleUser 标准用户
 	RoleUser = 20
-	// RoleAdmin for admins.
+	// RoleAdmin 管理员
 	RoleAdmin = 99
 )
 
-// User represents a user.
+// User 表示一个用户
 type User struct {
 	ID           int64         `json:"id"`
 	AccountID    int64         ` json:"accountId"`
@@ -59,7 +58,7 @@ type User struct {
 	AccessTokens []AccessToken ` json:"accessTokens"`
 }
 
-// AccessToken represents access tokens.
+// AccessToken 表示访问 tokens.
 type AccessToken struct {
 	ID     int64  ` json:"id"`
 	UserID int64  ` json:"userId"`
@@ -67,7 +66,7 @@ type AccessToken struct {
 	Token  string ` json:"token"`
 }
 
-// APIRequest represents a single API call.
+// APIRequest 表示单个 API 请求。
 type APIRequest struct {
 	ID         int64     ` json:"id"`
 	AccountID  int64     ` json:"accountId"`
@@ -78,7 +77,7 @@ type APIRequest struct {
 	RequestID  string    ` json:"reqId"`
 }
 
-// Webhook represents a webhook subscription.
+// Webhook 表示网络订阅。
 type Webhook struct {
 	ID        int64     `json:"id"`
 	AccountID int64     `json:"accountId"`

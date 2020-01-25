@@ -108,7 +108,6 @@ func loadLanguagePacks() {
 }
 
 // Translate 在语言包文件中找到一个键（保存在名为languagepack的目录中）
-// and return the value as template.HTML so it's safe to use HTML inside the language pack file.Translate
 // 并且返回一个 template.HTML 对像，所以可以安全地在语言包文件中使用 HTML 。
 // 语言包文件都是简单以 lng.json 命名的 JSON 文件，例如 en.json：
 // 	{
