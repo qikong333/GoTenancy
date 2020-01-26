@@ -19,6 +19,8 @@ func TestMain(m *testing.M) {
 	}
 	defer db.Close()
 
+	retval := m.Run()
+
 	//我们确认在开始测试前清除了所有数据
 	db.Connection.DropTableIfExists(
 		&model.AccessToken{},
@@ -28,6 +30,5 @@ func TestMain(m *testing.M) {
 		&model.Webhook{},
 	)
 
-	retval := m.Run()
 	os.Exit(retval)
 }

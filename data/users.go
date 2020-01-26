@@ -1,4 +1,4 @@
-package gorm
+package data
 
 import (
 	"errors"
@@ -6,12 +6,11 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	"github.com/snowlyg/GoTenancy/data"
 	"github.com/snowlyg/GoTenancy/model"
 )
 
 type Users struct {
-	DB *data.DB
+	DB *gorm.DB
 }
 
 func (u *Users) SignUp(email, password string) (*model.Account, error) {
@@ -26,7 +25,7 @@ func (u *Users) SignUp(email, password string) (*model.Account, error) {
 		IsActive:       true,
 	}
 
-	if err := u.DB.Connection.Create(&account).Error; err != nil {
+	if err := u.DB.Create(&account).Error; err != nil {
 		return nil, errors.New(fmt.Sprintf("create model.Account error:%v", err))
 	}
 
@@ -39,7 +38,7 @@ func (u *Users) SignUp(email, password string) (*model.Account, error) {
 		Role:      model.RoleAdmin,
 	}
 
-	if err := u.DB.Connection.Create(&user).Error; err != nil {
+	if err := u.DB.Create(&user).Error; err != nil {
 		return nil, errors.New("create model.User error")
 	}
 
@@ -51,7 +50,7 @@ func (u *Users) Auth(accountID uint, token string, pat bool) (*model.Account, *m
 
 	user := &model.User{AccountID: accountID, Token: token}
 
-	if err := u.DB.Connection.First(user).Error; err != nil {
+	if err := u.DB.First(user).Error; err != nil {
 		return nil, nil, err
 	}
 
@@ -65,7 +64,7 @@ func (u *Users) Auth(accountID uint, token string, pat bool) (*model.Account, *m
 
 func (u *Users) GetDetail(id uint) (*model.Account, error) {
 	account := &model.Account{Model: gorm.Model{ID: id}}
-	if err := u.DB.Connection.Preload("Users").First(account).Error; err != nil {
+	if err := u.DB.Preload("Users").First(account).Error; err != nil {
 		return nil, errors.New("GetDetail error")
 	}
 
@@ -74,7 +73,7 @@ func (u *Users) GetDetail(id uint) (*model.Account, error) {
 
 func (u *Users) GetUserByEmail(email string) (*model.User, error) {
 	user := &model.User{Email: email}
-	if err := u.DB.Connection.First(user).Error; err != nil {
+	if err := u.DB.First(user).Error; err != nil {
 		return nil, errors.New("GetUserByEmail error")
 	}
 
@@ -83,7 +82,7 @@ func (u *Users) GetUserByEmail(email string) (*model.User, error) {
 
 func (u *Users) GetByStripe(stripeID string) (*model.Account, error) {
 	account := model.Account{StripeID: stripeID}
-	if err := u.DB.Connection.First(account).Error; err != nil {
+	if err := u.DB.First(account).Error; err != nil {
 		return nil, errors.New("GetByStripe error")
 	}
 
@@ -91,7 +90,7 @@ func (u *Users) GetByStripe(stripeID string) (*model.Account, error) {
 }
 
 func (u *Users) ChangePassword(id, accountID uint, passwd string) error {
-	if err := u.DB.Connection.Model(&u).
+	if err := u.DB.Model(&u).
 		Where("id = ?", id).
 		Where("account_id = ?", accountID).
 		Update("password", passwd).Error; err != nil {
@@ -102,7 +101,7 @@ func (u *Users) ChangePassword(id, accountID uint, passwd string) error {
 }
 
 func (u *Users) SetSeats(id uint, seats int) error {
-	if err := u.DB.Connection.Model(&u).
+	if err := u.DB.Model(&u).
 		Where("id = ?", id).
 		Update("seats", seats).Error; err != nil {
 		return errors.New("SetSeats error")
@@ -121,7 +120,7 @@ func (u *Users) ConvertToPaid(id uint, stripeID, subID, plan string, yearly bool
 		"is_yearly":       yearly,
 	}
 
-	if err := u.DB.Connection.Model(&u).
+	if err := u.DB.Model(&u).
 		Where("id = ?", id).
 		Updates(d).Error; err != nil {
 		return errors.New("ConvertToPaid error")
@@ -136,7 +135,7 @@ func (u *Users) ChangePlan(id uint, plan string, yearly bool) error {
 		"is_yearly": yearly,
 	}
 
-	if err := u.DB.Connection.Model(&u).
+	if err := u.DB.Model(&u).
 		Where("id = ?", id).
 		Updates(d).Error; err != nil {
 		return errors.New("ChangePlan error")
@@ -152,7 +151,7 @@ func (u *Users) Cancel(id uint) error {
 		"is_yearly":       false,
 	}
 
-	if err := u.DB.Connection.Model(&u).
+	if err := u.DB.Model(&u).
 		Where("id = ?", id).
 		Updates(d).Error; err != nil {
 		return errors.New("user Cancel error")

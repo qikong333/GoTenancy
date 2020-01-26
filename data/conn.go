@@ -31,8 +31,10 @@ func (db *DB) Open(driverName, dataSource string) error {
 		&model.APIRequest{},
 		&model.Webhook{},
 	)
-
+	db.Users = &Users{DB: conn}
+	db.Webhooks = &Webhooks{DB: conn}
 	db.Connection = conn
+
 	return nil
 }
 

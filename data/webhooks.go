@@ -1,14 +1,14 @@
-package gorm
+package data
 
 import (
 	"errors"
 
-	"github.com/snowlyg/GoTenancy/data"
+	"github.com/jinzhu/gorm"
 	"github.com/snowlyg/GoTenancy/model"
 )
 
 type Webhooks struct {
-	DB *data.DB
+	DB *gorm.DB
 }
 
 func (wh *Webhooks) Add(accountID uint, events, url string) error {
@@ -17,7 +17,7 @@ func (wh *Webhooks) Add(accountID uint, events, url string) error {
 		EventName: events,
 		TargetURL: url,
 	}
-	if wh.DB.Connection.NewRecord(&webhook) {
+	if wh.DB.NewRecord(&webhook) {
 		return errors.New("model.Account 创建失败")
 	}
 
@@ -27,7 +27,7 @@ func (wh *Webhooks) Add(accountID uint, events, url string) error {
 
 func (wh *Webhooks) List(accountID uint) ([]model.Webhook, error) {
 	var hooks []model.Webhook
-	if err := wh.DB.Connection.Where("account_id", accountID).Find(&hooks).Error; err != nil {
+	if err := wh.DB.Where("account_id", accountID).Find(&hooks).Error; err != nil {
 		return nil, err
 	}
 
@@ -36,7 +36,7 @@ func (wh *Webhooks) List(accountID uint) ([]model.Webhook, error) {
 
 func (wh *Webhooks) Delete(accountID uint, event, url string) error {
 
-	if err := wh.DB.Connection.Where("account_id = ?", accountID).
+	if err := wh.DB.Where("account_id = ?", accountID).
 		Where("events = ?", event).
 		Where("url = ?", url).Delete(wh).Error; err != nil {
 		return err
@@ -46,7 +46,7 @@ func (wh *Webhooks) Delete(accountID uint, event, url string) error {
 
 func (wh *Webhooks) AllSubscriptions(event string) ([]model.Webhook, error) {
 	var hooks []model.Webhook
-	if err := wh.DB.Connection.Where("events", event).Find(&hooks).Error; err != nil {
+	if err := wh.DB.Where("events", event).Find(&hooks).Error; err != nil {
 		return nil, err
 	}
 
