@@ -8,23 +8,31 @@ import (
 	"github.com/snowlyg/GoTenancy/model"
 )
 
+var conn *gorm.DB
+var err error
+
 // Open 创建数据库连接并且初始化。
 func (db *DB) Open(driverName, dataSource string) error {
-	var err error
-	db.Connection, err = gorm.Open(driverName, dataSource)
+	conn, err = gorm.Open(driverName, dataSource)
 	if err != nil {
-		return errors.New("failed to connect database")
+		return errors.New("gorm.Open error")
 	}
-	//defer db.Connection.Close()
+
+	if db == nil {
+		return errors.New("data.DB is nil")
+	}
+	//defer conn.Close()
 
 	// Migrate the schema
-	db.Connection.AutoMigrate(
+	conn.AutoMigrate(
 		&model.AccessToken{},
 		&model.Account{},
 		&model.User{},
 		&model.APIRequest{},
 		&model.Webhook{},
 	)
+
+	db.Connection = conn
 	return nil
 }
 

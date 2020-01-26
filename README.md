@@ -285,7 +285,7 @@ logged in user. This is done via the request `Context`.
 ```go
 func (t Type) list(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	db := ctx.Value(GoTenancy.ContextDatabase).(*data.DB)
+	db := ctx.Value(GoTenancy.ContextDatabase).(data.DB)
 	auth := ctx.Value(ContextAuth).(Auth)
 
 	// you may use the db.Connection in your own data implementation

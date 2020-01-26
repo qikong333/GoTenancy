@@ -54,7 +54,7 @@ func (u User) signup(w http.ResponseWriter, r *http.Request) {
 
 func (u User) create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 	isJSON := ctx.Value(ContextContentIsJSON).(bool)
 
 	var data = new(struct {
@@ -129,7 +129,7 @@ func (u User) login(w http.ResponseWriter, r *http.Request) {
 }
 func (u User) signin(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 	isJSON := ctx.Value(ContextContentIsJSON).(bool)
 
 	var data = new(struct {
@@ -182,7 +182,7 @@ func (u User) signin(w http.ResponseWriter, r *http.Request) {
 func (u User) profile(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	acct, err := db.Users.GetDetail(keys.AccountID)
 	if err != nil {

@@ -50,7 +50,7 @@ func (e *Email) sendEmailProd(p SendEmailParameter) error {
 	}
 
 	if emailer == nil {
-		log.Println("cannot find email provider named: %s", config.Current.EmailProvider)
+		log.Println(fmt.Errorf("cannot find email provider named: %v", config.Current.EmailProvider))
 		return nil
 	}
 

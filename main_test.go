@@ -6,22 +6,27 @@ import (
 	"testing"
 
 	"github.com/snowlyg/GoTenancy/data"
+	"github.com/snowlyg/GoTenancy/model"
 )
 
 var db *data.DB
 
 func TestMain(m *testing.M) {
 	ds := "./data/test.db"
-
 	db = &data.DB{}
-	if err := db.Open("postgres", ds); err != nil {
+	if err := db.Open("sqlite3", ds); err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	//我们确认在开始测试前清除了所有数据
-	//if _, err := db.Connection.Exec("DELETE FROM GoTenancy_accounts;"); err != nil {
-	//	log.Fatal(err)
-	//}
+	db.Connection.DropTableIfExists(
+		&model.AccessToken{},
+		&model.Account{},
+		&model.User{},
+		&model.APIRequest{},
+		&model.Webhook{},
+	)
 
 	retval := m.Run()
 	os.Exit(retval)

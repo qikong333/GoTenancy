@@ -23,7 +23,7 @@ func SetStripeKey(key string) {
 
 // Billing 处理所有和 billing 相关请求
 type Billing struct {
-	DB *data.DB
+	DB data.DB
 }
 
 // BillingOverview 表示帐户是否为付费客户
@@ -89,7 +89,7 @@ func (b Billing) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (b Billing) Overview(accountID int64) (*BillingOverview, error) {
+func (b Billing) Overview(accountID uint) (*BillingOverview, error) {
 	//本结构将返回我们是否是付费客户
 	ov := &BillingOverview{}
 
@@ -172,7 +172,7 @@ func (b Billing) changeQuantity(stripeID, subID string, qty int) error {
 	return err
 }
 
-func (b Billing) userRoleChanged(db data.DB, accountID int64, oldRole, newRole model.Roles) (paid bool, err error) {
+func (b Billing) userRoleChanged(db data.DB, accountID uint, oldRole, newRole model.Roles) (paid bool, err error) {
 	acct, err := db.Users.GetDetail(accountID)
 	if err != nil {
 		return false, err
@@ -223,7 +223,7 @@ func (b Billing) userRoleChanged(db data.DB, accountID int64, oldRole, newRole m
 
 // BillingNewCustomer 表示发送到 api 以创建新客户的数据
 type BillingNewCustomer struct {
-	AccountID   int64
+	AccountID   uint
 	Email       string
 	Plan        string
 	StripeToken string
@@ -390,7 +390,7 @@ func (b Billing) Convert(bc BillingNewCustomer) error {
 func (b Billing) changePlan(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	var data = new(struct {
 		Plan     string `json:"plan"`
@@ -488,7 +488,7 @@ func (b Billing) changePlan(w http.ResponseWriter, r *http.Request) {
 func (b Billing) updateCard(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	account, err := db.Users.GetDetail(keys.AccountID)
 	if err != nil {
@@ -526,7 +526,7 @@ func (b Billing) updateCard(w http.ResponseWriter, r *http.Request) {
 func (b Billing) addCard(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	account, err := db.Users.GetDetail(keys.AccountID)
 	if err != nil {
@@ -562,7 +562,7 @@ func (b Billing) addCard(w http.ResponseWriter, r *http.Request) {
 func (b Billing) deleteCard(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	account, err := db.Users.GetDetail(keys.AccountID)
 	if err != nil {
@@ -582,7 +582,7 @@ func (b Billing) deleteCard(w http.ResponseWriter, r *http.Request) {
 func (b Billing) invoices(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	account, err := db.Users.GetDetail(keys.AccountID)
 	if err != nil {
@@ -603,7 +603,7 @@ func (b Billing) invoices(w http.ResponseWriter, r *http.Request) {
 func (b Billing) getNextInvoice(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	account, err := db.Users.GetDetail(keys.AccountID)
 	if err != nil {
@@ -646,7 +646,7 @@ type WebhookDataObjectData struct {
 
 func (b Billing) stripe(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	// 无论发生什么，条码希望我们发送200
 	defer w.Write([]byte("ok"))
@@ -691,7 +691,7 @@ func (b Billing) stripe(w http.ResponseWriter, r *http.Request) {
 func (b Billing) cancel(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	var data = new(struct {
 		Reason string `json:"reason"`

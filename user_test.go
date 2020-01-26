@@ -68,7 +68,7 @@ func executeRequest(req *http.Request) (*httptest.ResponseRecorder, *Server) {
 	routes["webhooks"] = newWebhook()
 
 	mux := &Server{
-		DB:              db,
+		DB:              *db,
 		Logger:          logger,
 		Authenticator:   authenticator,
 		Throttler:       Throttler,

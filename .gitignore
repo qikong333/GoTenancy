@@ -19,3 +19,5 @@ queue/tasks.cron
 
 # IDE exclude
 .idea/
+
+data/test.db

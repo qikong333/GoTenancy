@@ -1,9 +1,9 @@
 package data
 
-// BillingFlags is used to set which integrations a plan is authorize to use
+// BillingFlags 用于设置计划授权使用的集成
 type BillingFlags int
 
-// BillingPlan defines what one plan to have access to and set limitations
+// BillingPlan 定义一个有权访问和设置限制的计划
 type BillingPlan struct {
 	ID          string                 `json:"id"`
 	StripeID    string                 `json:"stripeId"`
@@ -24,32 +24,32 @@ func AddPlan(plan BillingPlan) {
 	plans[plan.ID] = plan
 }
 
-// GetPlan returns a specific plan by ID
+// GetPlan 通过 ID 获取计划
 func GetPlan(id string) (BillingPlan, bool) {
 	v, ok := plans[id]
 	return v, ok
 }
 
-// GetPlans returns a slice of the desired version plans
+// GetPlans 返回所需版本计划的切片
 func GetPlans(v string) []BillingPlan {
 	var list []BillingPlan
 	for k, p := range plans {
 		if k == "free" {
-			// the free plan is available on all versions
+			// 免费套餐适用于所有版本
 			list = append(list, p)
 		} else if p.Version == v {
-			// this is a plan for the requested version
+			// 这是请求版本的计划
 			list = append(list, p)
 		}
 	}
 	return list
 }
 
-// GetPlansVersion returns a slice of the plans matching a current plan
+// GetPlansVersion 返回与当前计划匹配的计划的切片
 func GetPlansVersion(plan string, defaultVersion string) []BillingPlan {
 	if p, ok := plans[plan]; ok {
 		return GetPlans(p.Version)
 	}
-	// we are returning current plan since we could not find this plan
+	// 我们正在返回目前的计划，因为我们找不到这个计划
 	return GetPlans(defaultVersion)
 }

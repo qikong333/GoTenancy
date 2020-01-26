@@ -5,23 +5,30 @@ import (
 	"os"
 	"testing"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/lib/pq"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/snowlyg/GoTenancy/data"
+	"github.com/snowlyg/GoTenancy/model"
 )
 
-var db *gorm.DB
+var db *data.DB
 
 func TestMain(m *testing.M) {
-	ds := "test.db"
-	conn, err := gorm.Open("sqlite3", ds)
+	ds := "../test.db"
+	db = &data.DB{}
+	err := db.Open("sqlite3", ds)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
+	defer db.Close()
 
 	//我们确认在开始测试前清除了所有数据
-
-	db = conn
+	db.Connection.DropTableIfExists(
+		&model.AccessToken{},
+		&model.Account{},
+		&model.User{},
+		&model.APIRequest{},
+		&model.Webhook{},
+	)
 
 	retval := m.Run()
 	os.Exit(retval)

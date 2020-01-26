@@ -16,8 +16,8 @@ import (
 
 // Auth 表示一个已认证用户
 type Auth struct {
-	AccountID int64
-	UserID    int64
+	AccountID uint
+	UserID    uint
 	Email     string
 	Role      model.Roles
 }
@@ -62,7 +62,7 @@ func Authenticator(next http.Handler) http.Handler {
 				return
 			}
 
-			db, ok := ctx.Value(ContextDatabase).(*data.DB)
+			db, ok := ctx.Value(ContextDatabase).(data.DB)
 			if !ok {
 				http.Error(w, "database not available", http.StatusUnauthorized)
 				return

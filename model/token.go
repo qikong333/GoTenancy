@@ -11,26 +11,26 @@ import (
 )
 
 // NewToken 返回将ID与唯一标识符结合在一起的令牌。
-func NewToken(id int64) string {
+func NewToken(id uint) string {
 	return fmt.Sprintf("%d|%s", id, uuid.NewV4().String())
 }
 
 // ParseToken 返回给定令牌的id和uuid。
-func ParseToken(token string) (int64, string) {
+func ParseToken(token string) (uint, string) {
 	pairs := strings.Split(token, "|")
 	if len(pairs) != 2 {
-		return -1, ""
+		return 0, ""
 	}
 
-	id, err := strconv.ParseInt(pairs[0], 10, 64)
+	id, err := strconv.ParseUint(pairs[0], 10, 64)
 	if err != nil {
-		return -1, ""
+		return 0, ""
 	}
-	return id, pairs[1]
+	return uint(id), pairs[1]
 }
 
 // NewFriendlyID 返回一个唯一的友好ID。
-func NewFriendlyID(id int64, key string) string {
+func NewFriendlyID(id uint, key string) string {
 	n := time.Now()
 	i, _ := strconv.Atoi(
 		fmt.Sprintf("%d%d%d%d%d%d%d%d%d",
@@ -46,11 +46,11 @@ func NewFriendlyID(id int64, key string) string {
 	return fmt.Sprintf("%x", i)
 }
 
-func StringToKey(s string) int64 {
-	i, err := strconv.ParseInt(s, 10, 64)
+func StringToKey(s string) uint {
+	id, err := strconv.ParseUint(s, 10, 64)
 	if err != nil {
-		log.Printf("error converting %s to int64\n", s)
-		return -1
+		log.Printf("error converting %s to uint\n", s)
+		return 0
 	}
-	return i
+	return uint(id)
 }

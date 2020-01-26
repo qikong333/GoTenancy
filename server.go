@@ -33,7 +33,7 @@ func init() {
 // Server 结构体是后端启动的端点
 // 负责将路由请求转到处理程序
 type Server struct {
-	DB              *data.DB
+	DB              data.DB
 	Logger          func(http.Handler) http.Handler
 	Authenticator   func(http.Handler) http.Handler
 	Throttler       func(http.Handler) http.Handler

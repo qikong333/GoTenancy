@@ -115,7 +115,7 @@ type addSubscriber struct {
 func (wh *Webhook) subscribe(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	var data addSubscriber
 	if err := ParseBody(r.Body, &data); err != nil {
@@ -133,7 +133,7 @@ func (wh *Webhook) subscribe(w http.ResponseWriter, r *http.Request) {
 func (wh *Webhook) list(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	subs, err := db.Webhooks.List(keys.AccountID)
 	if err != nil {
@@ -151,7 +151,7 @@ type DeleteSubscription struct {
 func (wh *Webhook) delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	keys := ctx.Value(ContextAuth).(Auth)
-	db := ctx.Value(ContextDatabase).(*data.DB)
+	db := ctx.Value(ContextDatabase).(data.DB)
 
 	var data DeleteSubscription
 	if err := ParseBody(r.Body, &data); err != nil {
