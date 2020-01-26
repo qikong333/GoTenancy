@@ -183,11 +183,7 @@ if err := db.Open(*dn, *ds); err != nil {
 mux.DB = db
 ```
 
-Where `*dn` and `*ds` are flags containing "postgres" and 
-"user=postgres password=postgres dbname=postgres sslmode=disable" for example,
-respectively which are the driver name and the datasource connection string.
-
-This is an example of what your `main` function could be:
+使用实例:
 
 ```go
 func main() {
@@ -213,7 +209,7 @@ func main() {
 
 	mux := GoTenancy.NewServer(routes)
 
-	// open the database connection
+	// 连接数据库
 	db := &data.DB{}
 
 	if err := db.Open(*dn, *ds); err != nil {
@@ -281,7 +277,6 @@ func (t Type) list(w http.ResponseWriter, r *http.Request) {
 	db := ctx.Value(GoTenancy.ContextDatabase).(data.DB)
 	auth := ctx.Value(ContextAuth).(Auth)
 
-	// you may use the db.Connection in your own data implementation
 	tasks := Tasks{DB: db.Connection}
 	list, err := tasks.List(auth.AccountID, auth.UserID)
 	if err != nil {
@@ -297,8 +292,8 @@ func (t Type) list(w http.ResponseWriter, r *http.Request) {
 以下方面的内容，仍然有点粗糙:
 
 * 测试覆盖不足。
-* Redis 组件是 **必须的** 并且修改起来比较困难，而且它和`队列` 包一起使用。
-* 管理 account/user 控制器还没有完成
+* Redis 组件是 **必须的** 并且它和`队列` 包混在一起使用修改起来比较困难。
+* 管理账号/用户控制器还没有完成
 * 开票控制器需要优化。
 * 控制器应该位于 `internal` 包内。
 * 仍然不确定数据包的编写方式是否自用/易于理解。
