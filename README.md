@@ -244,13 +244,13 @@ func main() {
 
  `GoTenancy` 包有两个非常有用的函数:
 
-**Respond**: used to return JSON:
+**Respond**: 返回 JSON 格式数据:
 
 ```go
 GoTenancy.Respond(w, r, http.StatusOK, oneTask)
 ```
 
-**ServePage**: used to return HTML from templates:
+**ServePage**: 返回 HTML 模版内容:
 
 ```go
 GoTenancy.ServePage(w, r, "template.html", data)
