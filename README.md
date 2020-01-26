@@ -3,9 +3,9 @@
 
 ---
 
-### Usage quick example
+### 快速使用实例
 
-You can create your main package and copy the `docker-compose.yml`. You'll need Redis and PostgreSQL for the library to work.
+你可以创建 main 包和复制 `docker-compose.yml` 文件。该项目需要 Redis 和数据库支持才能工作.
 
 ```go
 package main
@@ -33,43 +33,42 @@ func main() {
 }
 ```
 
-Than start the docker containers and your app:
+启动 docker 容器和项目:
 
 ```shell
 $> docker-compose up
 $> go run main.go
 ```
 
-Than you request localhost:8080:
+然后访问 localhost:8080:
 
 ```shell
 $> curl http://localhost:8080/test
 "hello? world!"
 ```
 
-## Table of content
+## 使用文档
 
-* [Installation](#installation)
-* [What's included](#whats-included)
-* [Quickstart](#quickstart)
-	- [Defining routes](#defining-routes)
-	- [How the database is handled](#database)
-	- [Responding with JSON or HTML](#responding-to-requests)
-	- [Parsing JSON body into types](#json-parsing)
-	- [Getting current user and database from the request Context](#context)
-* [More documentation](#more-documentation)
-* [Status and contributing](#status-and-contributing)
-* [Running the tests](#running-the-tests)
-* [Credits](#credits)
-* [Licence](#licence)
+* [安装](#安装)
+* [包括什么？](#包括什么)
+* [快速启动](#快速启动)
+	- [定义路由](#定义路由)
+	- [如何处理数据库](#如何处理数据库)
+	- [使用JSON或者HTML响应请求](#使用JSON或者HTML响应请求)
+	- [解析JSON](#解析JSON)
+	- [从请求上下文获取当前数据库和用户](#从请求上下文获取当前数据库和用户)
+* [状态和贡献](#状态和贡献)
+* [运行测试](#运行测试)
+* [参考项目](#参考项目)
+* [许可证](#许可证)
 
-## Installation
+## 安装
 
 `go get github.com/snowlyg/GoTenancy@latest`
 
-## What's included
+## 包括什么
 
-The following aspects are covered by this library:
+该项目包括下面这些内容:
 
 * Web server capable of serving HTML templates, static files. Also JSON for an API.
 * Easy helper functions for parsing and encoding type<->JSON.
@@ -85,11 +84,11 @@ The in dev part means that those parts needs some refactoring compare to what wa
 in the book. The vast majority of the code is there and working, but it's not "library" friendly 
 at the moment.
 
-## Quickstart
+## 快速开始
 
-Here's some quick tips to get you up and running.
+下面是一些帮助你快速启动项目的提示。
 
-### Defining routes
+### 定义路由
 
 You only need to pass the top-level routes that GoTenancy needs to handle via a `map[string]*GoTenancy.Route`.
 
@@ -169,15 +168,10 @@ func (t *Task) detail(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-### Database
-
-Before 2019/03/17 there's were a MongoDB implementation which has been removed 
-to only support database/sql. PostgreSQL is currently the only supported driver.
-
-The `data` package exposes a `DB` type that have a `Connection` field pointing 
-to the database.
-
-Before calling `http.ListenAndServe` you have to initialize the `DB` field of the `Server` type:
+### 如何处理数据库
+`data` 包集成了 gorm 包处理数据库链接，
+`data` 包有一个包含 `Connection` 字段数据库端点的 `DB` 类型。
+调用 `http.ListenAndServe` 之前你需要初始化 `Server` 的 `DB` 字段:
 
 ```go
 db := &data.DB{}
@@ -246,9 +240,9 @@ func main() {
 }
 ```
 
-### Responding to requests
+### 使用JSON或者HTML响应请求
 
-The `GoTenancy` package exposes two useful functions:
+ `GoTenancy` 包有两个非常有用的函数:
 
 **Respond**: used to return JSON:
 
@@ -262,9 +256,9 @@ GoTenancy.Respond(w, r, http.StatusOK, oneTask)
 GoTenancy.ServePage(w, r, "template.html", data)
 ```
 
-### JSON parsing
+### 解析JSON
 
-There a helper function called `GoTenancy.ParseBody` that handles the JSON decoding into types. This is a typical http handler:
+调用 `GoTenancy.ParseBody` 辅助方法可以处理 JSON 数据解析，这是一个典型的 http 处理程序:
 
 ```go
 func (t Type) do(w http.ResponseWriter, r *http.Request) {
@@ -277,10 +271,9 @@ func (t Type) do(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-### Context
+### 从请求上下文获取当前数据库和用户
 
-You'll most certainly need to get a reference back to the database and the currently 
-logged in user. This is done via the request `Context`.
+你肯定需要获取当前数据库的引用和登录用户。 通过请求的 `Context`实现它：
 
 ```go
 func (t Type) list(w http.ResponseWriter, r *http.Request) {
@@ -299,28 +292,19 @@ func (t Type) list(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-## Status and contributing
+## 状态和贡献
 
-I'm currently trying to reach a v1 and planning to use this in production with my next SaaS.
+以下方面的内容，仍然有点粗糙:
 
-If you'd like to contribute I'd be more than happy to discuss, post an issue and feel free to 
-explain what you'd like to add/change/remove.
+* 测试覆盖不足。
+* Redis 组件是 **必须的** 并且修改起来比较困难，而且它和`队列` 包一起使用。
+* 管理 account/user 控制器还没有完成
+* 开票控制器需要优化。
+* 控制器应该位于 `internal` 包内。
+* 仍然不确定数据包的编写方式是否自用/易于理解。
+* 授权无法颗粒化。例如，如果 /task 需要 `model.RoleUser` ，/task/delete 不能使用 `model.RoleAdmin` 作为 `MinimumRole`。
 
-Here's some aspect that are still a bit rough:
-
-* Not enough tests.
-* Redis is **required** and cannot be changed easily, it's also coupled with the `queue` package.
-* The controller for managing account/user is not done yet.
-* The billing controller will need to be glued.
-* The controllers package should be inside an `internal` package.
-* Still not sure if the way the data package is written that it is idiomatic / easy to understand.
-* There's no way to have granularity in the authorization, i.e. if /task require `model.RoleUser` /task/delete 
-cannot have `model.RoleAdmin` as `MinimumRole`.
-
-## Running the tests
-
-At this moment the tests uses the `mem` data implementation so you need to run the tests 
-using the `mem` tag as follow:
+## 运行测试
 
 ```shell
 $> go test -tags mem ./...
@@ -330,6 +314,6 @@ $> go test -tags mem ./...
 
 [dstpierre/gosaas](https://github.com/dstpierre/gosaas) 
 
-## Licence
+## 许可证
 
 [MIT](https://github.com/snowlyg/GoTenancy/blob/master/LICENSE)
