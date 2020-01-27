@@ -70,19 +70,17 @@ $> curl http://localhost:8080/test
 
 该项目包括下面这些内容:
 
-* Web server capable of serving HTML templates, static files. Also JSON for an API.
-* Easy helper functions for parsing and encoding type<->JSON.
-* Routing logic in your own code.
-* Middlewares: logging, authentication, rate limiting and throttling.
-* User authentication and authorization using multiple ways to pass a token and a simple role based authorization.
-* Database agnostic data layer. Currently handling PostgreSQL.
-* User management, billing (per account or per user) and webhooks management. [in dev]
-* Simple queue (using Redis) and Pub/Sub for queuing tasks.
-* Cron-like scheduling for recurring tasks.
+* Web 服务可以服务 HTML 模版, 静态文件 。 以及一个 API JSON 。
+* 解析和编码 type<->JSON 的简单辅助函数。
+* 路由逻辑代码自定义。
+* 中间件: 日志, 身份认证, 频率限制和节流。
+* 用户 使用多重方式传递一个 token 和一个简单的角色基础认证实现身份认证和授权。
+* 数据库未知数据层。使用 gorm 处理数据。
+* 用户管理, 开票 (每个账号或者每个用户) 和 webhooks 管理. [开发中]
+* 简单队列 (使用 Redis) 和队列任务的发布和订阅。
+* Cron-like 定期任务的计划。
 
-The in dev part means that those parts needs some refactoring compare to what was built 
-in the book. The vast majority of the code is there and working, but it's not "library" friendly 
-at the moment.
+开发中的部分意味着，那些部分代码功能还未完成。 
 
 ## 快速开始
 
@@ -90,13 +88,13 @@ at the moment.
 
 ### 定义路由
 
-You only need to pass the top-level routes that GoTenancy needs to handle via a `map[string]*GoTenancy.Route`.
+使用 GoTenancy 处理路由， 你仅仅需要通过一个 `map[string]*GoTenancy.Route` 传入一个顶级路由。
 
-For example, if you have the following routes in your web application:
+例如, 如果在你的项目里面有如下路由:
 
 `/task, /task/mine, /task/done, /ping`
 
-You would pass the following `map` to GoTenancy's `NewServer` function:
+你需要传递下面的 `map` 到 GoTenancy 的 `NewServer` 函数内:
 
 ```go
 routes := make(map[string]*GoTenancy.Route)
@@ -112,13 +110,13 @@ routes["ping"] = &GoTenancy.Route(
 )
 ```
 
-Where `task` and `ping` are types that implement `http`'s `ServeHTTP` function, for instance:
+`task` 和 `ping` 都是继承自 `http` 的 `ServeHTTP` 函数的类型, 例如:
 
 ```go
 type Task struct{}
 
 func (t *Task) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// you handle the rest of the routing logic in your own code
+	// 在你自己的代码中处理路由逻辑的其余部分
 	var head string
 	head, r.URL.Path = GoTenancy.ShiftPath(r.URL.Path)
 	if head =="/" {
@@ -130,26 +128,26 @@ func (t *Task) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-You may define `Task` in its own package or inside your `main` package.
+你可以在它自己的包里面或者你的 `main` 包内定义 `Task`。
 
-Each route can opt-in to include specific middleware, here's the list:
+每个路由能选择加入特定的中间件，列表如下:
 
 ```go
-// Route represents a web handler with optional middlewares.
+// 路由表示具有可选中间件的 Web 处理程序。
 type Route struct {
-	// middleware
-	WithDB           bool // Adds the database connection to the request Context
-	Logger           bool // Writes to the stdout request information
-	EnforceRateLimit bool // Enforce the default rate and throttling limits
+	// 中间件
+	WithDB           bool // 增加 数据库连接到请求上下文
+	Logger           bool // 写入请求信息输出
+	EnforceRateLimit bool // 强制执行默认速率和限制限制
 
-	// authorization
-	MinimumRole model.Roles // Indicates the minimum role to access this route
+	// 授权
+	MinimumRole model.Roles // 指明最小角色去访问这个路由
 
-	Handler http.Handler // The handler that will be executed
+	Handler http.Handler // 这个 handler 将被执行
 }
 ```
 
-This is how you would handle parameterized route `/task/detail/id-goes-here`:
+如何处理有参数的路由 `/task/detail/id-goes-here`:
 
 ```go
 func (t *Task) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -163,8 +161,8 @@ func (t *Task) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (t *Task) detail(w http.ResponseWriter, r *http.Request) {
 	id, _ := GoTenancy.ShiftPath(r.URL.Path)
 	// id = "id-goes-here
-	// and now you may call the database and passing this id (probably with the AccountID and UserID)
-	// from the Auth value of the request Context
+	// 现在你可以调用数据和传入id(可以使用 AccountID 和 UserID)
+	// 从请求上下文的 Auth 值
 }
 ```
 
@@ -223,10 +221,10 @@ func main() {
 		isDev = true
 	}
 
-	// Set as pub/sub subscriber for the queue executor if q is true
+	// 如果 q 为 true，则设置为队列执行器的 pub/子订阅者
 	executors := make(map[queue.TaskID]queue.TaskExecutor)
-	// if you have custom task executor you may fill this map with your own implementation 
-	// of queue.taskExecutor interface
+	// 如果你有自定义任务执行器，则可以使用你自己的实现填充此映射
+    // 队列.任务执行器接口
 	cache.New(*q, isDev, executors)
 
 	if err := http.ListenAndServe(":8080", mux); err != nil {
