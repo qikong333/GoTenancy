@@ -1,312 +1,173 @@
-# GoTenancy
-#### 一个用 Go 构建多租户平台和 web 应用的库
+<h1 align="center">IrisAdminApi</h1>
+
+<div align="center">
+    <a href="https://travis-ci.org/snowlyg/IrisAdminApi"><img src="https://travis-ci.org/snowlyg/IrisAdminApi.svg?branch=master" alt="Build Status"></a>
+    <a href="https://codecov.io/gh/snowlyg/IrisAdminApi"><img src="https://codecov.io/gh/snowlyg/IrisAdminApi/branch/master/graph/badge.svg" alt="Code Coverage"></a>
+    <a href="https://goreportcard.com/report/github.com/snowlyg/IrisAdminApi"><img src="https://goreportcard.com/badge/github.com/snowlyg/IrisAdminApi" alt="Go Report Card"></a>
+    <a href="https://godoc.org/github.com/snowlyg/IrisAdminApi"><img src="https://godoc.org/github.com/snowlyg/IrisAdminApi?status.svg" alt="GoDoc"></a>
+    <a href="https://github.com/snowlyg/IrisAdminApi/blob/master/LICENSE"><img src="https://img.shields.io/github/license/snowlyg/IrisAdminApi" alt="Licenses"></a>
+    <h5 align="center">Iris后台接口项目</h5>
+</div>
+
+#### 项目介绍
+- `iris-go` 框架后台接口项目
+- `gorm` 数据库模块 
+- `jwt` 的单点登陆认证方式
+- `cors` 跨域认证
+- 数据支持 `mysql`，`sqlite3` 配置; `sqlite3` 需要下载 `gcc`, 并且在 `/temp` 目录下新建文件 `gorm.db` ,  `tgorm.db`。  [gcc 下载地址](http://mingw-w64.org/doku.php/download)
+- 使用了 [https://github.com/snowlyg/gotransformer](https://github.com/snowlyg/gotransformer) 转换数据，返回数据格式化，excel 导入数据转换，xml 文件生产数据转换等 
+- 增加了 `excel` 文件接口导入实例
+- 前端采用了 `element-ui` 框架,代码集成到 `front` 目录
+- 使用 `casbin` 做权限控制, `config/rbac_model.conf` 为相关配置。系统会根据路由名称生成对应路由权限，并配置到管理员角色。
+- 增加系统日志记录 `/logs` 文件夹下，自定义记录，控制器内 `ctx.Application().Logger().Infof("%s 登录系统",aul.Username)`
+- 增加多商户模式，分为管理端和商户端
+
+ **注意：**
+ - 更新代码后，如果启动报错，请尝试手动删所有数据表后重启。
+ - 默认数据库设置为   `DirverType = "Sqlite"` ，使用 mysql 需要修改为 `DirverType = "Mysql"` ,在 `config/conf.tml` 文件中
+ - `permissions.xlsx` 权限导入测试模板文件，仅供测试使用; 权限会自动生成，无需另外导入。
+  - 增加 SaaS 多商户模块支持(功能开发中)
+---
+
+#### 项目开发过程详解
+
+[Iris-go 项目登陆 API 构建细节实现过程](https://learnku.com/articles/39551)
 
 ---
 
-### 快速使用实例
 
-你可以创建 main 包和复制 `docker-compose.yml` 文件。该项目需要 Redis 和数据库支持才能工作.
+#### 更新日志
+[更新日志](UPDATE.MD)
+---
 
-```go
-package main
+#### 问题总结
+[问题记录](ERRORS.MD)
 
-import (
-    "net/http"
+---
+
+#### 所用依赖包
+[所用依赖包](PLUGINS.MD)
 
 
-    "github.com/snowlyg/GoTenancy"
-    "github.com/snowlyg/GoTenancy/model"
-)
 
-func main() {
-	routes := make(map[string]*GoTenancy.Route)
-	routes["test"] = &GoTenancy.Route{
-		Logger:      true,
-		MinimumRole: model.RolePublic,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			GoTenancy.Respond(w, r, http.StatusOK, "hello world!")
-		}),
-	}
+#### 项目初始化
 
-	mux := GoTenancy.NewServer(routes)
-	http.ListenAndServe(":8080", mux)
-}
+>拉取项目
+
+```shell script
+git clone https://github.com/snowlyg/IrisAdminApi.git
+
+// github 克隆太慢可以用 gitee 地址:
+
+git clone https://gitee.com/dtouyu/IrisAdminApi.git
+
 ```
 
-启动 docker 容器和项目:
+>加载依赖管理包 (解决国内下载依赖太慢问题)
+>使用国内七牛云的 go module 镜像。
+>
+>参考 https://github.com/goproxy/goproxy.cn。
+>
+>阿里： https://mirrors.aliyun.com/goproxy/
+>
+>官方： https://goproxy.io/
+>
+>中国：https://goproxy.cn
+>
+>其他：https://gocenter.io
+>
+>golang 1.13 可以直接执行：
+```shell script
+go env -w GO111MODULE=on
+go env -w GOPROXY=https://goproxy.cn,direct
 
-```shell
-$> docker-compose up
-$> go run main.go
 ```
 
-然后访问 localhost:8080:
+>项目配置文件 /config/conf.tml
 
-```shell
-$> curl http://localhost:8080/test
-"hello? world!"
+```shell script
+cp conf.tml.example conf.tml
 ```
 
-## 使用文档
+>打包前端代码 
+```shell script
+ cd front // 进入前端代码目录
+ npm install  //加载依赖
+ npm run-script build  //打包前端代码
 
-* [安装](#安装)
-* [包括什么？](#包括什么)
-* [快速启动](#快速启动)
-	- [定义路由](#定义路由)
-	- [如何处理数据库](#如何处理数据库)
-	- [使用JSON或者HTML响应请求](#使用JSON或者HTML响应请求)
-	- [解析JSON](#解析JSON)
-	- [从请求上下文获取当前数据库和用户](#从请求上下文获取当前数据库和用户)
-* [状态和贡献](#状态和贡献)
-* [运行测试](#运行测试)
-* [参考项目](#参考项目)
-* [许可证](#许可证)
-
-## 安装
-
-`go get github.com/snowlyg/GoTenancy@latest`
-
-## 包括什么
-
-该项目包括下面这些内容:
-
-* Web 服务可以服务 HTML 模版, 静态文件 。 以及一个 API JSON 。
-* 解析和编码 type<->JSON 的简单辅助函数。
-* 路由逻辑代码自定义。
-* 中间件: 日志, 身份认证, 频率限制和节流。
-* 用户 使用多重方式传递一个 token 和一个简单的角色基础认证实现身份认证和授权。
-* 数据库未知数据层。使用 gorm 处理数据。
-* 用户管理, 开票 (每个账号或者每个用户) 和 webhooks 管理. [开发中]
-* 简单队列 (使用 Redis) 和队列任务的发布和订阅。
-* Cron-like 定期任务的计划。
-
-开发中的部分意味着，那些部分代码功能还未完成。 
-
-## 快速开始
-
-下面是一些帮助你快速启动项目的提示。
-
-### 定义路由
-
-使用 GoTenancy 处理路由， 你仅仅需要通过一个 `map[string]*GoTenancy.Route` 传入一个顶级路由。
-
-例如, 如果在你的项目里面有如下路由:
-
-`/task, /task/mine, /task/done, /ping`
-
-你需要传递下面的 `map` 到 GoTenancy 的 `NewServer` 函数内:
-
-```go
-routes := make(map[string]*GoTenancy.Route)
-routes["task"] = &GoTenancy.Route{
-	Logger: true,
-	WithDB: true,
-	handler: task,
-	...
-}
-routes["ping"] = &GoTenancy.Route(
-	Logger: true,
-	Handler: ping,
-)
+ // 如果是开发前端代码,使用热加载
+ npm run dev  
 ```
 
-`task` 和 `ping` 都是继承自 `http` 的 `ServeHTTP` 函数的类型, 例如:
-
-```go
-type Task struct{}
-
-func (t *Task) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// 在你自己的代码中处理路由逻辑的其余部分
-	var head string
-	head, r.URL.Path = GoTenancy.ShiftPath(r.URL.Path)
-	if head =="/" {
-		t.list(w, r)
-	} else if head == "mine" {
-		t.mine(w, r)
-	}
-	...
-}
+>增加 hosts 
+```shell script
+127.0.0.1       admin.irisadminapi.com # 管理端
+127.0.0.1       app.irisadminapi.com  # 商户端
+127.0.0.1       irisadminapi.com #公共域名
 ```
 
-你可以在它自己的包里面或者你的 `main` 包内定义 `Task`。
+>运行项目 
 
-每个路由能选择加入特定的中间件，列表如下:
+[gowatch](https://gitee.com/silenceper/gowatch)
+```shell script
+go get github.com/silenceper/gowatch
 
-```go
-// 路由表示具有可选中间件的 Web 处理程序。
-type Route struct {
-	// 中间件
-	WithDB           bool // 增加 数据库连接到请求上下文
-	Logger           bool // 写入请求信息输出
-	EnforceRateLimit bool // 强制执行默认速率和限制限制
+gowatch //安装 gowatch 后才可以使用
 
-	// 授权
-	MinimumRole model.Roles // 指明最小角色去访问这个路由
-
-	Handler http.Handler // 这个 handler 将被执行
-}
+go run main.go // go 命令
 ```
 
-如何处理有参数的路由 `/task/detail/id-goes-here`:
+---
+##### 单元测试 
+>http test
 
-```go
-func (t *Task) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var head string
-	head, r.URL.Path = GoTenancy.ShiftPath(r.URL.Path)
-	if head == "detail" {
-		t.detail(w, r)
-	}
-}
+```shell script
+ go test -v  //所有测试
+ 
+ go test -run TestUserCreate -v //单个方法
 
-func (t *Task) detail(w http.ResponseWriter, r *http.Request) {
-	id, _ := GoTenancy.ShiftPath(r.URL.Path)
-	// id = "id-goes-here
-	// 现在你可以调用数据和传入id(可以使用 AccountID 和 UserID)
-	// 从请求上下文的 Auth 值
-}
+
+// go get github.com/rakyll/gotest@latest 增加测试输出数据颜色
+
+ gotest 
+ 
 ```
 
-### 如何处理数据库
-`data` 包集成了 gorm 包处理数据库链接，
-`data` 包有一个包含 `Connection` 字段数据库端点的 `DB` 类型。
-调用 `http.ListenAndServe` 之前你需要初始化 `Server` 的 `DB` 字段:
+---
 
-```go
-db := &data.DB{}
+##### 接口文档
+自动生成文档 (访问过接口就会自动成功)
+因为原生的 jquery.min.js 里面的 cdn 是使用国外的，访问很慢。
+有条件的可以开个 vpn ,如果没有可以根据下面的方法修改一下，访问就很快了
+>打开 /resource/apiDoc/index.html 修改里面的
 
-if err := db.Open(*dn, *ds); err != nil {
-	log.Fatal("unable to connect to the database:", err)
-}
+```shell script
+https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
 
-mux.DB = db
+国内的 cdn
+
+
+https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js
 ```
 
-使用实例:
+>访问文档，从浏览器直接打开 http://localhost:8081/apiDoc
 
-```go
-func main() {
-	dn := flag.String("driver", "postgres", "name of the database driver to use, only postgres is supported at the moment")
-	ds := flag.String("datasource", "", "database connection string")
-	q := flag.Bool("queue", false, "set as queue pub/sub subscriber and task executor")
-	e := flag.String("env", "dev", "set the current environment [dev|staging|prod]")
-	flag.Parse()
+---
 
-	if len(*dn) == 0 || len(*ds) == 0 {
-		flag.Usage()
-		return
-	}
+#### 登录项目
+管理端 http://admin.irisadminapi.com
+商户端 http://app.irisadminapi.com
 
-	routes := make(map[string]*GoTenancy.Route)
-	routes["test"] = &GoTenancy.Route{
-		Logger:      true,
-		MinimumRole: model.RolePublic,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			GoTenancy.Respond(w, r, http.StatusOK, "hello? Worker!")
-		}),
-	}
+//在 `config/conf.tml` 内配置 
 
-	mux := GoTenancy.NewServer(routes)
+项目管理员账号 ： username
+项目管理员密码 ： password
 
-	// 连接数据库
-	db := &data.DB{}
 
-	if err := db.Open(*dn, *ds); err != nil {
-		log.Fatal("unable to connect to the database:", err)
-	}
+#### 演示地址
+[http://112.74.61.105:8087/](http://112.74.61.105:8087)
 
-	mux.DB = db
 
-	isDev := false
-	if *e == "dev" {
-		isDev = true
-	}
+###### Iris-go 学习交流QQ群 ：676717248
+<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=cc99ccf86be594e790eacc91193789746af7df4a88e84fe949e61e5c6d63537c"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="Iris-go" title="Iris-go"></a>
 
-	// 如果 q 为 true，则设置为队列执行器的 pub/子订阅者
-	executors := make(map[queue.TaskID]queue.TaskExecutor)
-	// 如果你有自定义任务执行器，则可以使用你自己的实现填充此映射
-    // 队列.任务执行器接口
-	cache.New(*q, isDev, executors)
-
-	if err := http.ListenAndServe(":8080", mux); err != nil {
-		log.Println(err)
-	}
-
-}
-```
-
-### 使用JSON或者HTML响应请求
-
- `GoTenancy` 包有两个非常有用的函数:
-
-**Respond**: 返回 JSON 格式数据:
-
-```go
-GoTenancy.Respond(w, r, http.StatusOK, oneTask)
-```
-
-**ServePage**: 返回 HTML 模版内容:
-
-```go
-GoTenancy.ServePage(w, r, "template.html", data)
-```
-
-### 解析JSON
-
-调用 `GoTenancy.ParseBody` 辅助方法可以处理 JSON 数据解析，这是一个典型的 http 处理程序:
-
-```go
-func (t Type) do(w http.ResponseWriter, r *http.Request) {
-	var oneTask MyTask
-	if err := GoTenancy.ParseBody(r.Body, &oneTask); err != nil {
-		GoTenancy.Respond(w, r, http.StatusBadRequest, err)
-		return
-	}
-	...
-}
-```
-
-### 从请求上下文获取当前数据库和用户
-
-你肯定需要获取当前数据库的引用和登录用户。 通过请求的 `Context`实现它：
-
-```go
-func (t Type) list(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	db := ctx.Value(GoTenancy.ContextDatabase).(data.DB)
-	auth := ctx.Value(ContextAuth).(Auth)
-
-	tasks := Tasks{DB: db.Connection}
-	list, err := tasks.List(auth.AccountID, auth.UserID)
-	if err != nil {
-		GoTenancy.Respond(w, r, http.StatusInternalServerError, err)
-		return
-	}
-	Respond(w, r, http.StatusOK, list)
-}
-```
-
-## 状态和贡献
-
-以下方面的内容，仍然有点粗糙:
-
-* 测试覆盖不足。
-* Redis 组件是 **必须的** 并且它和`队列` 包混在一起使用修改起来比较困难。
-* 管理账号/用户控制器还没有完成
-* 开票控制器需要优化。
-* 控制器应该位于 `internal` 包内。
-* 仍然不确定数据包的编写方式是否自用/易于理解。
-* 授权无法颗粒化。例如，如果 /task 需要 `model.RoleUser` ，/task/delete 不能使用 `model.RoleAdmin` 作为 `MinimumRole`。
-
-## 运行测试
-
-```shell
-$> go test -tags mem ./...
-```
-
-## 参考项目
-
-[dstpierre/gosaas](https://github.com/dstpierre/gosaas) 
-
-## 许可证
-
-[MIT](https://github.com/snowlyg/GoTenancy/blob/master/LICENSE)
