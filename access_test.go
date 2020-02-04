@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"IrisAdminApi/config"
+	"GoTenancy/config"
 	"github.com/kataras/iris/v12"
 )
 

@@ -23,7 +23,7 @@ func Payload(ctx iris.Context) {
 	s := hex.EncodeToString(mac.Sum(nil))
 
 	if signature == "sha1="+s {
-		if err := cmd("cd", "", []string{"/root/go/src/IrisAdminApi"}); err != nil {
+		if err := cmd("cd", "", []string{"/root/go/src/GoTenancy"}); err != nil {
 			ctx.Application().Logger().Errorf("cmd %v", err)
 		}
 

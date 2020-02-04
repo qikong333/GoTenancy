@@ -7,7 +7,7 @@ Charset = "UTF-8"
 
 [Other]
     [Other.App]
-        Name = "IrisAdminApi" #项目名称
+        Name = "GoTenancy" #项目名称
         Url = "irisadminapi.com:80"
         LoggerLevel = "debug" # 日志类型 "disable" "fatal" "error" "warn""info" "debug"
         DirverType = "Sqlite" # 数据库类型 "Sqlite" "Mysql"

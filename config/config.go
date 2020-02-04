@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"IrisAdminApi/files"
-	"IrisAdminApi/transformer"
+	"GoTenancy/files"
+	"GoTenancy/transformer"
 	"github.com/kataras/iris/v12"
 	gf "github.com/snowlyg/gotransformer"
 )

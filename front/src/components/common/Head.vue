@@ -3,7 +3,7 @@
 		<div class="logoImg">
 			<div class="logoImg-left">
 				<img src="@/assets/logo_top.png">
-				<span style="top: -10px;">IrisAdminApi</span>
+				<span style="top: -10px;">GoTenancy</span>
 			</div>
 			<el-dropdown class="user_d" @command="handleCommand">
 				<span class="el-dropdown-link">

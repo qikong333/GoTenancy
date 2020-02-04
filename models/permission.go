@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"IrisAdminApi/database"
-	"IrisAdminApi/validates"
+	"GoTenancy/database"
+	"GoTenancy/validates"
 	"github.com/fatih/color"
 	"github.com/jinzhu/gorm"
 )

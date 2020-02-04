@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	"IrisAdminApi/database"
-	"IrisAdminApi/libs"
-	"IrisAdminApi/validates"
+	"GoTenancy/database"
+	"GoTenancy/libs"
+	"GoTenancy/validates"
 	"github.com/fatih/color"
 	"github.com/iris-contrib/middleware/jwt"
 	"github.com/jameskeane/bcrypt"

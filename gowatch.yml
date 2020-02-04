@@ -1,7 +1,7 @@
 # gowatch.yml 配置示例
 #
 # 程序名称
-#appname: "IrisAdminApi"
+#appname: "GoTenancy"
 
 # Output
 #output: ./

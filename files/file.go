@@ -136,7 +136,7 @@ func GetAbsPath(confPath string) string {
 
 	end := filepath.Base(getwd)
 
-	if end != "IrisAdminApi" {
+	if end != "GoTenancy" {
 		return filepath.Join(filepath.Dir(getwd) , confPath)
 	}
 

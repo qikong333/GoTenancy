@@ -3,10 +3,10 @@ package controllers
 import (
 	"time"
 
-	"IrisAdminApi/libs"
-	"IrisAdminApi/models"
-	"IrisAdminApi/transformer"
-	"IrisAdminApi/validates"
+	"GoTenancy/libs"
+	"GoTenancy/models"
+	"GoTenancy/transformer"
+	"GoTenancy/validates"
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	gf "github.com/snowlyg/gotransformer"

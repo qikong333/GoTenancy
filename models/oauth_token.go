@@ -1,7 +1,7 @@
 package models
 
 import (
-	"IrisAdminApi/database"
+	"GoTenancy/database"
 	"github.com/jinzhu/gorm"
 )
 

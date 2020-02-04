@@ -3,9 +3,9 @@ package controllers
 import (
 	"net/http"
 
-	"IrisAdminApi/libs"
-	"IrisAdminApi/models"
-	"IrisAdminApi/validates"
+	"GoTenancy/libs"
+	"GoTenancy/models"
+	"GoTenancy/validates"
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 )

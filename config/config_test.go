@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"testing"
 
-	"IrisAdminApi/files"
+	"GoTenancy/files"
 )
 
 func TestGetAppCreateSysData(t *testing.T) {
@@ -72,7 +72,7 @@ func TestGetAppName(t *testing.T) {
 	}{
 		{
 			name: "config",
-			want: "IrisAdminApi",
+			want: "GoTenancy",
 		},
 	}
 	for _, tt := range tests {

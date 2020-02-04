@@ -10,7 +10,7 @@
 							</el-col>
 							<el-col :span="19">
 								<p class="admin-home-p1">您好，{{UserProfile.Name}}，祝你开心每一天！</p>
-								<p class="admin-home-p2">欢迎来到，IrisAdminApi</p>
+								<p class="admin-home-p2">欢迎来到，GoTenancy</p>
 							</el-col>
 						</el-row>
 					</el-col>

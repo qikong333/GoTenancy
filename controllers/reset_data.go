@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"IrisAdminApi/models"
-	"IrisAdminApi/routepath"
+	"GoTenancy/models"
+	"GoTenancy/routepath"
 	"github.com/kataras/iris/v12"
 )
 /*

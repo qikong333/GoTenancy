@@ -4,9 +4,9 @@ import (
 	"strconv"
 	"time"
 
-	"IrisAdminApi/models"
-	"IrisAdminApi/transformer"
-	"IrisAdminApi/validates"
+	"GoTenancy/models"
+	"GoTenancy/transformer"
+	"GoTenancy/validates"
 	"github.com/go-playground/validator/v10"
 	gf "github.com/snowlyg/gotransformer"
 

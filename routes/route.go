@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"IrisAdminApi/controllers"
-	"IrisAdminApi/database"
-	"IrisAdminApi/middleware"
+	"GoTenancy/controllers"
+	"GoTenancy/database"
+	"GoTenancy/middleware"
 	"github.com/betacraft/yaag/irisyaag"
 	"github.com/kataras/iris/v12"
 )

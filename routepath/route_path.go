@@ -3,7 +3,7 @@ package routepath
 import (
 	"strings"
 
-	"IrisAdminApi/validates"
+	"GoTenancy/validates"
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/core/router"
 )

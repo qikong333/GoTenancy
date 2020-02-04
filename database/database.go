@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
-	"IrisAdminApi/config"
-	"IrisAdminApi/files"
+	"GoTenancy/config"
+	"GoTenancy/files"
 	"github.com/casbin/casbin/v2"
 	gormadapter "github.com/casbin/gorm-adapter/v2"
 	"github.com/fatih/color"

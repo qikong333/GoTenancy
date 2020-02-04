@@ -1,11 +1,11 @@
-<h1 align="center">IrisAdminApi</h1>
+<h1 align="center">GoTenancy</h1>
 
 <div align="center">
-    <a href="https://travis-ci.org/snowlyg/IrisAdminApi"><img src="https://travis-ci.org/snowlyg/IrisAdminApi.svg?branch=master" alt="Build Status"></a>
-    <a href="https://codecov.io/gh/snowlyg/IrisAdminApi"><img src="https://codecov.io/gh/snowlyg/IrisAdminApi/branch/master/graph/badge.svg" alt="Code Coverage"></a>
-    <a href="https://goreportcard.com/report/github.com/snowlyg/IrisAdminApi"><img src="https://goreportcard.com/badge/github.com/snowlyg/IrisAdminApi" alt="Go Report Card"></a>
-    <a href="https://godoc.org/github.com/snowlyg/IrisAdminApi"><img src="https://godoc.org/github.com/snowlyg/IrisAdminApi?status.svg" alt="GoDoc"></a>
-    <a href="https://github.com/snowlyg/IrisAdminApi/blob/master/LICENSE"><img src="https://img.shields.io/github/license/snowlyg/IrisAdminApi" alt="Licenses"></a>
+    <a href="https://travis-ci.org/snowlyg/GoTenancy"><img src="https://travis-ci.org/snowlyg/GoTenancy.svg?branch=master" alt="Build Status"></a>
+    <a href="https://codecov.io/gh/snowlyg/GoTenancy"><img src="https://codecov.io/gh/snowlyg/GoTenancy/branch/master/graph/badge.svg" alt="Code Coverage"></a>
+    <a href="https://goreportcard.com/report/github.com/snowlyg/GoTenancy"><img src="https://goreportcard.com/badge/github.com/snowlyg/GoTenancy" alt="Go Report Card"></a>
+    <a href="https://godoc.org/github.com/snowlyg/GoTenancy"><img src="https://godoc.org/github.com/snowlyg/GoTenancy?status.svg" alt="GoDoc"></a>
+    <a href="https://github.com/snowlyg/GoTenancy/blob/master/LICENSE"><img src="https://img.shields.io/github/license/snowlyg/GoTenancy" alt="Licenses"></a>
     <h5 align="center">Iris后台接口项目</h5>
 </div>
 
@@ -55,11 +55,11 @@
 >拉取项目
 
 ```shell script
-git clone https://github.com/snowlyg/IrisAdminApi.git
+git clone https://github.com/snowlyg/GoTenancy.git
 
 // github 克隆太慢可以用 gitee 地址:
 
-git clone https://gitee.com/dtouyu/IrisAdminApi.git
+git clone https://gitee.com/dtouyu/GoTenancy.git
 
 ```
 

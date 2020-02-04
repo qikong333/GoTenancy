@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"IrisAdminApi/models"
+	"GoTenancy/models"
 	"github.com/iris-contrib/middleware/jwt"
 	"github.com/kataras/iris/v12/context"
 

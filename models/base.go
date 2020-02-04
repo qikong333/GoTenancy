@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"IrisAdminApi/config"
-	"IrisAdminApi/database"
-	"IrisAdminApi/validates"
+	"GoTenancy/config"
+	"GoTenancy/database"
+	"GoTenancy/validates"
 	"github.com/fatih/color"
 	"github.com/jinzhu/gorm"
 )

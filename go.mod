@@ -1,4 +1,4 @@
-module IrisAdminApi
+module GoTenancy
 
 go 1.13
 
