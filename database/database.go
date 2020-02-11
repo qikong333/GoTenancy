@@ -53,7 +53,6 @@ func getDataBase() *dataBase {
 	return db
 }
 
-
 /*
 	获取数据连接驱动类型和链接
 */
@@ -81,10 +80,12 @@ func getDirverNameAndConn() (string, string) {
 	return dirverName, conn
 }
 
+// 访问数据库实例
 func GetGdb() *gorm.DB {
 	return getDataBase().Db
 }
 
+// 访问 casbin 实例
 func GetEnforcer() *casbin.Enforcer {
 	return getDataBase().Enforcer
 }
@@ -98,4 +99,3 @@ func isTestEnv() bool {
 	}
 	return false
 }
-

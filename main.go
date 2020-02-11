@@ -2,12 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"time"
 
 	"GoTenancy/config"
 	"GoTenancy/database"
-	"GoTenancy/files"
+	"GoTenancy/logs"
 	"GoTenancy/models"
 	"GoTenancy/routes"
 	"github.com/betacraft/yaag/yaag"
@@ -15,25 +13,10 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-func newLogFile() *os.File {
-	path := "./logs/"
-	_ = files.CreateFile(path)
-	filename := path + time.Now().Format("2006-01-02") + ".log"
-	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		color.Red(fmt.Sprintf("日志记录出错: %v", err))
-	}
-
-	return f
-}
-
 func NewApp() *iris.Application {
 	api := iris.New()
 	api.Logger().SetLevel(config.GetAppLoggerLevel())
-
 	api.RegisterView(iris.HTML("resources", ".html"))
-	//api.HandleDir("/admin", "resources/admin")
-	//api.HandleDir("/static", "resources/app/static")
 
 	db := database.GetGdb()
 	db.AutoMigrate(
@@ -58,13 +41,12 @@ func NewApp() *iris.Application {
 	})
 
 	routes.App(api) //注册 app 路由
-	//routes.Admin(api) //注册 admin 路由
 
 	return api
 }
 
 func main() {
-	f := newLogFile()
+	f := logs.NewLog()
 	defer f.Close()
 
 	api := NewApp()

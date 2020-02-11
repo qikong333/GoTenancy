@@ -34,7 +34,7 @@ func CreateSystemAdmin(roleId uint) {
 	aul := &validates.CreateUpdateUserRequest{
 		Username: config.GetTestDataUserName(),
 		Password: config.GetTestDataPwd(),
-		Name:    config.GetTestDataName(),
+		Name:     config.GetTestDataName(),
 		RoleIds:  []uint{roleId},
 	}
 
@@ -90,7 +90,7 @@ func IsNotFound(err error) {
 
 /**
  * 获取列表
- * @method MGetAll
+ * @method GetAll
  * @param  {[type]} string string    [description]
  * @param  {[type]} orderBy string    [description]
  * @param  {[type]} relation string    [description]
@@ -116,6 +116,7 @@ func GetAll(string, orderBy string, offset, limit int) *gorm.DB {
 	return db
 }
 
+// 清除系统基础数据
 func DelAllData() {
 	database.GetGdb().Unscoped().Delete(&OauthToken{})
 	database.GetGdb().Unscoped().Delete(&Permission{})
@@ -124,6 +125,7 @@ func DelAllData() {
 	database.GetGdb().Exec("DELETE FROM casbin_rule;")
 }
 
+// 更新数据
 func Update(v, d interface{}) error {
 	if err := database.GetGdb().Model(v).Updates(d).Error; err != nil {
 		return err
@@ -131,6 +133,7 @@ func Update(v, d interface{}) error {
 	return nil
 }
 
+// 获取用户角色
 func GetRolesForUser(uid uint) []string {
 	uids, err := database.GetEnforcer().GetRolesForUser(strconv.FormatUint(uint64(uid), 10))
 	if err != nil {
@@ -141,10 +144,12 @@ func GetRolesForUser(uid uint) []string {
 	return uids
 }
 
+// 获取角色权限 （注意不是用户权限）
 func GetPermissionsForUser(uid uint) [][]string {
 	return database.GetEnforcer().GetPermissionsForUser(strconv.FormatUint(uint64(uid), 10))
 }
 
+// 删除数据表
 func DropTables() {
 	database.GetGdb().DropTable("users", "roles", "permissions", "oauth_tokens", "casbin_rule")
 }

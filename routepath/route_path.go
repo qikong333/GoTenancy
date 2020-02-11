@@ -8,17 +8,19 @@ import (
 	"github.com/kataras/iris/v12/core/router"
 )
 
-type PathName struct {
-	Name   string
-	Path   string
-	Method string
+// 路由信息
+type PathInfo struct {
+	Name   string // 路由名称
+	Path   string // 路由路径
+	Method string // 路由 HTTP 方法
 }
 
-func getPathNames(i interface{}) []*PathName {
-	var pns []*PathName
+//
+func getPathInfos(i interface{}) []*PathInfo {
+	var pns []*PathInfo
 	if routeReadOnly, ok := i.([]context.RouteReadOnly); ok {
 		for _, s := range routeReadOnly {
-			pn := &PathName{
+			pn := &PathInfo{
 				Name:   s.Name(),
 				Path:   s.Path(),
 				Method: s.Method(),
@@ -27,7 +29,7 @@ func getPathNames(i interface{}) []*PathName {
 		}
 	} else if route, ok := i.([]*router.Route); ok {
 		for _, s := range route {
-			pn := &PathName{
+			pn := &PathInfo{
 				Name:   s.Name,
 				Path:   s.Path,
 				Method: s.Method,
@@ -41,7 +43,7 @@ func getPathNames(i interface{}) []*PathName {
 // 获取路由信息
 func GetRoutes(i interface{}) []*validates.PermissionRequest {
 	var rrs []*validates.PermissionRequest
-	for _, s := range getPathNames(i) {
+	for _, s := range getPathInfos(i) {
 		if !isPermRoute(s.Name) {
 			path := strings.Replace(s.Path, ":id", "*", 1)
 			rr := &validates.PermissionRequest{Name: path, DisplayName: s.Name, Description: s.Name, Act: s.Method}

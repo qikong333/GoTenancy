@@ -6,8 +6,8 @@ import (
 )
 
 func TestGetAbsPath(t *testing.T) {
-	t.Skipped()
-	absPath := "C:\\Users\\Administrator\\go\\src\\GoTenancy\\"
+	t.Skip()
+	absPath := "C:\\Users\\Administrator\\go\\src\\github.com\\snowlyg\\GoTenancy\\"
 
 	conf := "config/conf.tml"
 	abs := filepath.Join(absPath, conf)
