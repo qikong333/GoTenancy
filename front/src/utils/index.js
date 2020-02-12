@@ -94,8 +94,6 @@ const utils = {
 
   },
   //登陆
-  resetData: () => axios.get(`v1/admin/resetData`),
-  //登陆
   getToken: (item) => axios.post(`v1/admin/login`, {
     username: item.name,
     password: item.password
