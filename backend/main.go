@@ -14,9 +14,9 @@ import (
 )
 
 func NewApp() *iris.Application {
-	api := iris.New()
-	api.Logger().SetLevel(config.GetAppLoggerLevel())
-	api.RegisterView(iris.HTML("resources", ".html"))
+	app := iris.New()
+	app.Logger().SetLevel(config.GetAppLoggerLevel())
+	app.RegisterView(iris.HTML("resources", ".html"))
 
 	db := database.GetGdb()
 	db.AutoMigrate(
@@ -40,18 +40,18 @@ func NewApp() *iris.Application {
 		},
 	})
 
-	routes.App(api) //注册 app 路由
+	routes.New(app) //注册 app 路由
 
-	return api
+	return app
 }
 
 func main() {
 	f := logs.NewLog()
 	defer f.Close()
 
-	api := NewApp()
-	api.Logger().SetOutput(f) //记录日志
-	err := api.Run(iris.Addr(config.GetAppUrl()), iris.WithConfiguration(config.GetIrisConf()))
+	app := NewApp()
+	//app.Logger().SetOutput(f) //记录日志
+	err := app.Run(iris.Addr(config.GetAppUrl()), iris.WithConfiguration(config.GetIrisConf()))
 	if err != nil {
 		color.Yellow(fmt.Sprintf("项目运行结束: %v", err))
 	}

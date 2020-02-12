@@ -6,3 +6,8 @@ type PermissionRequest struct {
 	Description string `json:"description" comment:"描述"`
 	Act         string `json:"act" comment:"Act"`
 }
+
+// 新建更新表单验证
+func (alr *PermissionRequest) Valid() string {
+	return BaseValid(alr)
+}

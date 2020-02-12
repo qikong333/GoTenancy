@@ -8,7 +8,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-func App(api *iris.Application) {
+func New(api *iris.Application) {
 	app := api.Party("app.", middleware.CrsAuth()).AllowMethods(iris.MethodOptions)
 	{
 		app.HandleDir("/static", "resources/app/static")

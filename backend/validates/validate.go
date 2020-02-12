@@ -31,3 +31,18 @@ func init() {
 		fmt.Println(fmt.Sprintf("RegisterDefaultTranslations %v", err))
 	}
 }
+
+// 验证表单
+func BaseValid(alr interface{}) string {
+	var formErrs string
+	err := Validate.Struct(alr)
+	if err != nil {
+		errs := err.(validator.ValidationErrors)
+		for _, e := range errs.Translate(ValidateTrans) {
+			if len(e) > 0 {
+				formErrs += e + ";"
+			}
+		}
+	}
+	return formErrs
+}

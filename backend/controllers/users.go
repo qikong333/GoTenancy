@@ -7,7 +7,6 @@ import (
 	"GoTenancy/backend/database/models"
 	"GoTenancy/backend/transformer"
 	"GoTenancy/backend/validates"
-	"github.com/go-playground/validator/v10"
 	gf "github.com/snowlyg/gotransformer"
 
 	"github.com/kataras/iris/v12"
@@ -77,16 +76,10 @@ func CreateUser(ctx iris.Context) {
 		return
 	}
 
-	err := validates.Validate.Struct(*aul)
-	if err != nil {
-		errs := err.(validator.ValidationErrors)
-		for _, e := range errs.Translate(validates.ValidateTrans) {
-			if len(e) > 0 {
-				ctx.StatusCode(iris.StatusOK)
-				_, _ = ctx.JSON(ApiResource(false, nil, e))
-				return
-			}
-		}
+	if formErrs := aul.Valid(); len(formErrs) > 0 {
+		ctx.StatusCode(iris.StatusOK)
+		_, _ = ctx.JSON(ApiResource(false, nil, formErrs))
+		return
 	}
 
 	user := models.NewUserByStruct(aul)
@@ -124,16 +117,10 @@ func UpdateUser(ctx iris.Context) {
 		_, _ = ctx.JSON(ApiResource(false, nil, err.Error()))
 	}
 
-	err := validates.Validate.Struct(*aul)
-	if err != nil {
-		errs := err.(validator.ValidationErrors)
-		for _, e := range errs.Translate(validates.ValidateTrans) {
-			if len(e) > 0 {
-				ctx.StatusCode(iris.StatusOK)
-				_, _ = ctx.JSON(ApiResource(false, nil, e))
-				return
-			}
-		}
+	if formErrs := aul.Valid(); len(formErrs) > 0 {
+		ctx.StatusCode(iris.StatusOK)
+		_, _ = ctx.JSON(ApiResource(false, nil, formErrs))
+		return
 	}
 
 	id, _ := ctx.Params().GetUint("id")
@@ -222,7 +209,14 @@ func userTransform(user *models.User) *transformer.User {
 	g := gf.NewTransform(u, user, time.RFC3339)
 	_ = g.Transformer()
 
-	roleIds := models.GetRolesForUser(user.ID)
+	ris, roleName := getRoleidsAndNames(user.ID)
+	u.RoleIds = ris
+	u.RoleName = roleName
+	return u
+}
+
+func getRoleidsAndNames(id uint) ([]int, string) {
+	roleIds := models.GetRolesForUser(id)
 	var ris []int
 	var roleName string
 	for num, roleId := range roleIds {
@@ -237,7 +231,5 @@ func userTransform(user *models.User) *transformer.User {
 		}
 
 	}
-	u.RoleIds = ris
-	u.RoleName = roleName
-	return u
+	return ris, roleName
 }

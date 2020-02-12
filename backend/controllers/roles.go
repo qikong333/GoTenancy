@@ -7,7 +7,6 @@ import (
 	"GoTenancy/backend/libs"
 	"GoTenancy/backend/transformer"
 	"GoTenancy/backend/validates"
-	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	gf "github.com/snowlyg/gotransformer"
 )
@@ -61,16 +60,10 @@ func CreateRole(ctx iris.Context) {
 		return
 	}
 
-	err := validates.Validate.Struct(*roleJson)
-	if err != nil {
-		errs := err.(validator.ValidationErrors)
-		for _, e := range errs.Translate(validates.ValidateTrans) {
-			if len(e) > 0 {
-				ctx.StatusCode(iris.StatusOK)
-				_, _ = ctx.JSON(ApiResource(false, nil, e))
-				return
-			}
-		}
+	if formErrs := roleJson.Valid(); len(formErrs) > 0 {
+		ctx.StatusCode(iris.StatusOK)
+		_, _ = ctx.JSON(ApiResource(false, nil, formErrs))
+		return
 	}
 
 	role := models.NewRoleByStruct(roleJson)
@@ -112,16 +105,10 @@ func UpdateRole(ctx iris.Context) {
 		return
 	}
 
-	err := validates.Validate.Struct(*roleForm)
-	if err != nil {
-		errs := err.(validator.ValidationErrors)
-		for _, e := range errs.Translate(validates.ValidateTrans) {
-			if len(e) > 0 {
-				ctx.StatusCode(iris.StatusOK)
-				_, _ = ctx.JSON(ApiResource(false, nil, e))
-				return
-			}
-		}
+	if formErrs := roleForm.Valid(); len(formErrs) > 0 {
+		ctx.StatusCode(iris.StatusOK)
+		_, _ = ctx.JSON(ApiResource(false, nil, formErrs))
+		return
 	}
 
 	id, _ := ctx.Params().GetUint("id")

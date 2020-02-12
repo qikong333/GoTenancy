@@ -15,10 +15,8 @@ type Query func(user models.User) bool
 // a connected to an sql database.
 type UserRepository interface {
 	Exec(query Query, action Query, limit int, mode int) (ok bool)
-
 	Select(query Query) (user models.User, found bool)
 	SelectMany(query Query, limit int) (results []models.User)
-
 	InsertOrUpdate(user models.User) (updatedUser models.User, err error)
 	Delete(query Query, limit int) (deleted bool)
 }

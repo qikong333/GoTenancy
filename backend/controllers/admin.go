@@ -38,14 +38,14 @@ func AdminLogin(ctx iris.Context) {
 		return
 	}
 
-	ctx.Application().Logger().Infof("%s 登录系统", aul.UserName)
-	ctx.StatusCode(iris.StatusOK)
-
 	admin := models.NewAdmin(0, aul.UserName)
 	admin.GetAdminByUserName()
 
 	response, status, msg := admin.CheckLogin(aul.Password)
-
+	if status {
+		ctx.Application().Logger().Infof("%s 登录系统", aul.UserName)
+	}
+	ctx.StatusCode(iris.StatusOK)
 	_, _ = ctx.JSON(ApiResource(status, response, msg))
 	return
 

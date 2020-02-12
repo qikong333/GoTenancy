@@ -9,7 +9,6 @@ import (
 	"GoTenancy/backend/transformer"
 	"GoTenancy/backend/validates"
 	"github.com/360EntSecGroup-Skylar/excelize"
-	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	gf "github.com/snowlyg/gotransformer"
 )
@@ -58,16 +57,11 @@ func CreatePermission(ctx iris.Context) {
 		_, _ = ctx.JSON(ApiResource(false, nil, err.Error()))
 		return
 	}
-	err := validates.Validate.Struct(*aul)
-	if err != nil {
-		errs := err.(validator.ValidationErrors)
-		for _, e := range errs.Translate(validates.ValidateTrans) {
-			if len(e) > 0 {
-				ctx.StatusCode(iris.StatusOK)
-				_, _ = ctx.JSON(ApiResource(false, nil, e))
-				return
-			}
-		}
+
+	if formErrs := aul.Valid(); len(formErrs) > 0 {
+		ctx.StatusCode(iris.StatusOK)
+		_, _ = ctx.JSON(ApiResource(false, nil, formErrs))
+		return
 	}
 
 	perm := models.NewPermissionByStruct(aul)
@@ -106,16 +100,11 @@ func UpdatePermission(ctx iris.Context) {
 		_, _ = ctx.JSON(ApiResource(false, nil, err.Error()))
 		return
 	}
-	err := validates.Validate.Struct(*aul)
-	if err != nil {
-		errs := err.(validator.ValidationErrors)
-		for _, e := range errs.Translate(validates.ValidateTrans) {
-			if len(e) > 0 {
-				ctx.StatusCode(iris.StatusOK)
-				_, _ = ctx.JSON(ApiResource(false, nil, e))
-				return
-			}
-		}
+
+	if formErrs := aul.Valid(); len(formErrs) > 0 {
+		ctx.StatusCode(iris.StatusOK)
+		_, _ = ctx.JSON(ApiResource(false, nil, formErrs))
+		return
 	}
 
 	id, _ := ctx.Params().GetUint("id")

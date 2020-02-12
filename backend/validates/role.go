@@ -6,3 +6,8 @@ type RoleRequest struct {
 	Description    string `json:"description" comment:"描述"`
 	PermissionsIds []uint `json:"permissions_ids" comment:"权限"`
 }
+
+// 新建更新表单验证
+func (alr *RoleRequest) Valid() string {
+	return BaseValid(alr)
+}
