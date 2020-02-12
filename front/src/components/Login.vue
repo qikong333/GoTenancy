@@ -18,9 +18,6 @@
             <el-col class="margin-bottom">
               <el-button type="primary" class="loginBtn" @click="login" :loading="loading">登录</el-button>
             </el-col>
-            <el-col class="margin-bottom">
-              <a @click="reset_data" >重置系统数据</a>
-            </el-col>
           </el-row>
         </div>
       </div>
@@ -81,20 +78,11 @@
           utils.setCookie('token', data.data.data.access_token, null);
           await this.getUserProfile();
           this.loading = false
-          this.$router.replace({
+          await this.$router.replace({
             name: 'Home'
           })
         }
-      }, async reset_data() {
-
-        const data = await utils.resetData();
-        this.$message({
-          type: 'info',
-          message: data.data.msg
-        });
-
-        return false
-      },
+      }
     },
     mounted() {
 

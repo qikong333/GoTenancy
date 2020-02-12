@@ -45,14 +45,17 @@ func UserLogin(ctx iris.Context) {
 		}
 	}
 
-	ctx.Application().Logger().Infof("%s 登录系统", aul.Username)
-	ctx.StatusCode(iris.StatusOK)
+
 
 	user := models.NewUser(0, aul.Username)
 	user.GetUserByUsername()
 
 	response, status, msg := user.CheckLogin(aul.Password)
+	if status {
+		ctx.Application().Logger().Infof("%s 登录系统", aul.Username)
+	}
 
+	ctx.StatusCode(iris.StatusOK)
 	_, _ = ctx.JSON(ApiResource(status, response, msg))
 	return
 
