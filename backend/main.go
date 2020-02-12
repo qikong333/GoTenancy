@@ -33,7 +33,7 @@ func NewApp() *iris.Application {
 	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware. //api 文档配置
 		On:       true,
 		DocTitle: config.GetAppName(),
-		DocPath:  "./backend/resources/apiDoc/index.html", //设置绝对路径
+		DocPath:  "./resources/apiDoc/index.html", //设置绝对路径
 		BaseUrls: map[string]string{
 			"Production": config.GetAppUrl(),
 			"Staging":    "",
