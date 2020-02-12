@@ -26,4 +26,5 @@ require (
 	github.com/snowlyg/gotransformer v0.0.0-20200113053933-95313ccbc2fb
 	github.com/valyala/fasthttp v1.7.1 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
+	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
 )
