@@ -17,14 +17,14 @@ type App struct {
 	Name          string
 	Url           string
 	LoggerLevel   string
-	DirverType    string
+	DriverType    string
 	CreateSysData bool
 }
 
 type Mysql struct {
-	Connect    string
-	Name       string
-	TName      string
+	Connect string
+	Name    string
+	TName   string
 }
 
 type Mongodb struct {
@@ -32,8 +32,8 @@ type Mongodb struct {
 }
 
 type Sqlite struct {
-	Connect    string
-	TConnect   string
+	Connect  string
+	TConnect string
 }
 
 type Redis struct {

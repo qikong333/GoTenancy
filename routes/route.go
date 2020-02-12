@@ -18,10 +18,10 @@ func App(api *iris.Application) {
 
 		v1 := app.Party("/v1")
 		{
+			v1.Use(irisyaag.New())
 			v1.Post("/admin/login", controllers.UserLogin)
 			v1.PartyFunc("/admin", func(app iris.Party) {
-				v1.Use(irisyaag.New())
-				casbinMiddleware := middleware.New(database.GetEnforcer())           //casbin for gorm                                                   // <- IMPORTANT, register the middleware.
+				casbinMiddleware := middleware.New(database.GetEnforcer())         //casbin for gorm                                                   // <- IMPORTANT, register the middleware.
 				app.Use(middleware.JwtHandler().Serve, casbinMiddleware.ServeHTTP) //登录验证
 				app.Get("/logout", controllers.UserLogout).Name = "退出"
 
@@ -65,10 +65,10 @@ func App(api *iris.Application) {
 
 		v1 := admin.Party("/v1")
 		{
+			v1.Use(irisyaag.New())
 			v1.Post("/admin/login", controllers.AdminLogin)
 			v1.Get("/admin/resetData", controllers.ResetData)
 			v1.PartyFunc("/admin", func(admin iris.Party) {
-				v1.Use(irisyaag.New())
 				casbinMiddleware := middleware.New(database.GetEnforcer())           //casbin for gorm                                                   // <- IMPORTANT, register the middleware.
 				admin.Use(middleware.JwtHandler().Serve, casbinMiddleware.ServeHTTP) //登录验证
 				admin.Get("/logout", controllers.UserLogout).Name = "退出"

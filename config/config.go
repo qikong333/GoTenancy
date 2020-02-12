@@ -32,8 +32,6 @@ func getConfig() *config {
 	return cfg
 }
 
-
-
 func getTfConf(isc iris.Configuration) *transformer.Conf {
 	app := transformer.App{}
 	g := gf.NewTransform(&app, isc.Other["App"], time.RFC3339)
@@ -94,8 +92,8 @@ func GetAppLoggerLevel() string {
 	return getTc().App.LoggerLevel
 }
 
-func GetAppDirverType() string {
-	return getTc().App.DirverType
+func GetAppDriverType() string {
+	return getTc().App.DriverType
 }
 
 func GetAppCreateSysData() bool {

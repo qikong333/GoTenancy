@@ -30,13 +30,13 @@ type dataBase struct {
  */
 func getDataBase() *dataBase {
 	once.Do(func() {
-		dirverName, conn := getDirverNameAndConn()
-		gdb, err := gorm.Open(dirverName, conn)
+		driverName, conn := getDriverNameAndConn()
+		gdb, err := gorm.Open(driverName, conn)
 		if err != nil {
 			color.Red(fmt.Sprintf("gorm open 错误: %v", err))
 		}
 
-		c, err := gormadapter.NewAdapter(dirverName, conn, true) // Your driver and data source.
+		c, err := gormadapter.NewAdapter(driverName, conn, true) // Your driver and data source.
 		if err != nil {
 			color.Red(fmt.Sprintf("NewAdapter 错误: %v", err))
 		}
@@ -56,19 +56,19 @@ func getDataBase() *dataBase {
 /*
 	获取数据连接驱动类型和链接
 */
-func getDirverNameAndConn() (string, string) {
-	var dirverName string
+func getDriverNameAndConn() (string, string) {
+	var driverName string
 	var conn string
-	dirverType := config.GetAppDirverType()
-	if dirverType == "Sqlite" {
-		dirverName = "sqlite3"
+	driverType := config.GetAppDriverType()
+	if driverType == "Sqlite" {
+		driverName = "sqlite3"
 		if isTestEnv() {
 			conn = config.GetSqliteTConnect()
 		} else {
 			conn = config.GetSqliteConnect()
 		}
-	} else if dirverType == "Mysql" {
-		dirverName = "mysql"
+	} else if driverType == "Mysql" {
+		driverName = "mysql"
 		connect := config.GetMysqlConnect()
 		if isTestEnv() {
 			conn = connect + config.GetMysqlTName() + "?charset=utf8&parseTime=True&loc=Local"
@@ -77,7 +77,7 @@ func getDirverNameAndConn() (string, string) {
 		}
 	}
 
-	return dirverName, conn
+	return driverName, conn
 }
 
 // 访问数据库实例

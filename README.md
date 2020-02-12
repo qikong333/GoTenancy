@@ -6,11 +6,11 @@
     <a href="https://goreportcard.com/report/github.com/snowlyg/GoTenancy"><img src="https://goreportcard.com/badge/github.com/snowlyg/GoTenancy" alt="Go Report Card"></a>
     <a href="https://godoc.org/github.com/snowlyg/GoTenancy"><img src="https://godoc.org/github.com/snowlyg/GoTenancy?status.svg" alt="GoDoc"></a>
     <a href="https://github.com/snowlyg/GoTenancy/blob/master/LICENSE"><img src="https://img.shields.io/github/license/snowlyg/GoTenancy" alt="Licenses"></a>
-    <h5 align="center">Iris后台接口项目</h5>
+    <h5 align="center">多商户管理平台</h5>
 </div>
 
 #### 项目介绍
-- `iris-go` 框架后台接口项目
+- 基于 `iris-go` 框架开发
 - `gorm` 数据库模块 
 - `jwt` 的单点登陆认证方式
 - `cors` 跨域认证
@@ -20,18 +20,14 @@
 - 前端采用了 `element-ui` 框架,代码集成到 `front` 目录
 - 使用 `casbin` 做权限控制, `config/rbac_model.conf` 为相关配置。系统会根据路由名称生成对应路由权限，并配置到管理员角色。
 - 增加系统日志记录 `/logs` 文件夹下，自定义记录，控制器内 `ctx.Application().Logger().Infof("%s 登录系统",aul.Username)`
-- 增加多商户模式，分为管理端和商户端
+- 增加多商户，多应用支持。
 
  **注意：**
  - 更新代码后，如果启动报错，请尝试手动删所有数据表后重启。
- - 默认数据库设置为   `DirverType = "Sqlite"` ，使用 mysql 需要修改为 `DirverType = "Mysql"` ,在 `config/conf.tml` 文件中
+ - 默认数据库设置为   `DriverType = "Sqlite"` ，使用 mysql 需要修改为 `DriverType = "Mysql"` ,在 `config/conf.tml` 文件中
  - `permissions.xlsx` 权限导入测试模板文件，仅供测试使用; 权限会自动生成，无需另外导入。
   - 增加 SaaS 多商户模块支持(功能开发中)
 ---
-
-#### 项目开发过程详解
-
-[Iris-go 项目登陆 API 构建细节实现过程](https://learnku.com/articles/39551)
 
 ---
 
@@ -64,18 +60,6 @@ git clone https://gitee.com/dtouyu/GoTenancy.git
 ```
 
 >加载依赖管理包 (解决国内下载依赖太慢问题)
->使用国内七牛云的 go module 镜像。
->
->参考 https://github.com/goproxy/goproxy.cn。
->
->阿里： https://mirrors.aliyun.com/goproxy/
->
->官方： https://goproxy.io/
->
->中国：https://goproxy.cn
->
->其他：https://gocenter.io
->
 >golang 1.13 可以直接执行：
 ```shell script
 go env -w GO111MODULE=on
@@ -126,7 +110,6 @@ go run main.go // go 命令
  
  go test -run TestUserCreate -v //单个方法
 
-
 // go get github.com/rakyll/gotest@latest 增加测试输出数据颜色
 
  gotest 
@@ -146,17 +129,16 @@ https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
 
 国内的 cdn
 
-
 https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js
 ```
 
->访问文档，从浏览器直接打开 http://localhost:8081/apiDoc
+>访问文档，从浏览器直接打开 http://admin.irisadminapi.com/apiDoc
 
 ---
 
 #### 登录项目
-管理端 http://admin.irisadminapi.com
-商户端 http://app.irisadminapi.com
+管理端： http://admin.irisadminapi.com
+商户端： http://app.irisadminapi.com
 
 //在 `config/conf.tml` 内配置 
 
@@ -165,7 +147,6 @@ https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js
 
 
 #### 演示地址
-[http://112.74.61.105:8087/](http://112.74.61.105:8087)
 
 
 ###### Iris-go 学习交流QQ群 ：676717248
