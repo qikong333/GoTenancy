@@ -23,7 +23,7 @@ type config struct {
 var cfg *config
 var once sync.Once
 
-func getConfig() *config {
+func single() *config {
 	once.Do(func() {
 		isc := iris.TOML(files.GetAbsPath("./backend/config/conf.tml")) // 加载配置文件
 		tc := getTfConf(isc)
@@ -78,11 +78,11 @@ func getTfConf(isc iris.Configuration) *transformer.Conf {
 }
 
 func GetIrisConf() iris.Configuration {
-	return getConfig().Isc
+	return single().Isc
 }
 
 func getTc() *transformer.Conf {
-	return getConfig().Tc
+	return single().Tc
 }
 
 func GetAppName() string {
@@ -99,6 +99,10 @@ func GetAppLoggerLevel() string {
 
 func GetAppDriverType() string {
 	return getTc().App.DriverType
+}
+
+func GetAppCookieNameForSessionID() string {
+	return getTc().App.CookieNameForSessionID
 }
 
 func GetAppCreateSysData() bool {

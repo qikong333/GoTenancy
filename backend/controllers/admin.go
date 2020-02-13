@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"fmt"
-
 	"GoTenancy/backend/config"
+	"GoTenancy/backend/database/models"
 	"GoTenancy/backend/database/services"
+	session2 "GoTenancy/backend/session"
+	"GoTenancy/backend/validates"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 	"github.com/kataras/iris/v12/sessions"
@@ -24,6 +25,18 @@ type AdminController struct {
 func (c *AdminController) Get() mvc.Result {
 	c.Ctx.ViewLayout(iris.NoLayout)
 	view := mvc.View{
+		Name: "admin/page/index.html",
+		Data: iris.Map{
+			"Title":   config.GetAppName(),
+			"AppName": config.GetAppName(),
+		},
+	}
+	return view
+}
+
+func (c *AdminController) GetLogin() mvc.Result {
+	c.Ctx.ViewLayout(iris.NoLayout)
+	view := mvc.View{
 		Name: "admin/page/login/index.html",
 		Data: iris.Map{
 			"Title":   config.GetAppName(),
@@ -33,61 +46,27 @@ func (c *AdminController) Get() mvc.Result {
 	return view
 }
 
-func (c *AdminController) GetLogin() string {
-	count := c.Session.Increment("count", 1)
+func (c *AdminController) PostLogin() {
+	session := session2.Single().Start(c.Ctx)
 
-	body := fmt.Sprintf("Hello from AdminController\nTotal visits from you: %d", count)
-	c.Logger.Log(body)
-	return body
+	aul := new(validates.AdminLoginRequest)
+	if err := c.Ctx.ReadJSON(aul); err != nil {
+		c.Ctx.Redirect("login")
+	}
+
+	if formErrs := aul.Valid(); len(formErrs) > 0 {
+		c.Ctx.Redirect("login")
+	}
+
+	admin := models.NewAdmin(0, aul.UserName)
+	admin.GetAdminByUserName()
+
+	status, _ := admin.CheckLogin(aul.Password)
+	if status {
+		c.Ctx.Application().Logger().Infof("%s 登录系统", aul.UserName)
+		session.Set("authenticated", true)
+	} else {
+		c.Ctx.Redirect("admin/login")
+	}
+
 }
-
-//
-//func AdminLogin(ctx iris.Context) {
-//	aul := new(validates.AdminLoginRequest)
-//
-//	if err := ctx.ReadJSON(aul); err != nil {
-//		ctx.StatusCode(iris.StatusOK)
-//		_, _ = ctx.JSON(ApiResource(false, nil, err.Error()))
-//		return
-//	}
-//
-//	if formErrs := aul.Valid(); len(formErrs) > 0 {
-//		ctx.StatusCode(iris.StatusOK)
-//		_, _ = ctx.JSON(ApiResource(false, nil, formErrs))
-//		return
-//	}
-//
-//	admin := models.NewAdmin(0, aul.UserName)
-//	admin.GetAdminByUserName()
-//
-//	response, status, msg := admin.CheckLogin(aul.Password)
-//	if status {
-//		ctx.Application().Logger().Infof("%s 登录系统", aul.UserName)
-//	}
-//	ctx.StatusCode(iris.StatusOK)
-//	_, _ = ctx.JSON(ApiResource(status, response, msg))
-//	return
-//
-//}
-//
-///**
-//* @api {get} /logout 用户退出登陆
-//* @apiName 用户退出登陆
-//* @apiGroup Admins
-//* @apiVersion 1.0.0
-//* @apiDescription 用户退出登陆
-//* @apiSampleRequest /logout
-//* @apiSuccess {String} msg 消息
-//* @apiSuccess {bool} state 状态
-//* @apiSuccess {String} data 返回数据
-//* @apiPermission null
-// */
-//func AdminLogout(ctx iris.Context) {
-//	aui := ctx.Values().GetString("auth_user_id")
-//	uid := uint(libs.ParseInt(aui, 0))
-//	models.AdminLogout(uid)
-//
-//	ctx.Application().Logger().Infof("%d 退出系统", uid)
-//	ctx.StatusCode(http.StatusOK)
-//	_, _ = ctx.JSON(ApiResource(true, nil, "退出"))
-//}

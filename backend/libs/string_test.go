@@ -14,16 +14,6 @@ func TestBase64Decode(t *testing.T) {
 	})
 }
 
-func TestHashPassword(t *testing.T) {
-	notWant := ""
-	t.Run("TestHashPassword", func(t *testing.T) {
-		if got := HashPassword("TestHashPassword"); got == notWant {
-			t.Errorf("HashPassword() = %v, not_want %v", got, notWant)
-		}
-	})
-
-}
-
 func TestParseFlostToString(t *testing.T) {
 	args := 3.140
 	want := "3.14000"

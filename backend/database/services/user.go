@@ -5,6 +5,7 @@ import (
 
 	"GoTenancy/backend/database/models"
 	"GoTenancy/backend/database/repositories"
+	"GoTenancy/backend/libs"
 )
 
 // UserService handles CRUID operations of a user datamodel,
@@ -61,7 +62,7 @@ func (s *userService) GetByUsernameAndPassword(username, userPassword string) (m
 	return s.repo.Select(func(m models.User) bool {
 		if m.Username == username {
 			hashed := m.Password
-			if ok, _ := models.ValidatePassword(userPassword, hashed); ok {
+			if ok, _ := libs.ValidatePassword(userPassword, hashed); ok {
 				return true
 			}
 		}
@@ -81,7 +82,7 @@ func (s *userService) Update(id uint, user models.User) (models.User, error) {
 // UpdatePassword updates a user's password.
 func (s *userService) UpdatePassword(id uint, newPassword string) (models.User, error) {
 	// update the user and return it.
-	hashed, err := models.GeneratePassword(newPassword)
+	hashed, err := libs.GeneratePassword(newPassword)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -106,7 +107,7 @@ func (s *userService) Create(userPassword string, user models.User) (models.User
 		return models.User{}, errors.New("unable to create this user")
 	}
 
-	hashed, err := models.GeneratePassword(userPassword)
+	hashed, err := libs.GeneratePassword(userPassword)
 	if err != nil {
 		return models.User{}, err
 	}

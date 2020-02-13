@@ -15,11 +15,12 @@ type Conf struct {
 }
 
 type App struct {
-	Name          string
-	Url           string
-	LoggerLevel   string
-	DriverType    string
-	CreateSysData bool
+	Name                   string
+	Url                    string
+	LoggerLevel            string
+	DriverType             string
+	CookieNameForSessionID string
+	CreateSysData          bool
 }
 
 type Mysql struct {

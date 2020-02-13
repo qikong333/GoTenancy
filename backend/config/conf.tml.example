@@ -12,6 +12,7 @@ Charset = "UTF-8"
         LoggerLevel = "debug" # 日志类型 "disable" "fatal" "error" "warn""info" "debug"
         DriverType = "Sqlite" # 数据库类型 "Sqlite" , "Mysql"
         CreateSysData = true # 是否创建系统数据 true / false
+        CookieNameForSessionID = "mycookiesessionnameid" # sessionId
     [Other.Mysql]
         Connect ="root:passwrod@(127.0.0.1:3306)/"
         Name ="iris" # 数据库名称

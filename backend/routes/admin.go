@@ -22,10 +22,10 @@ func AdminMVC(app *mvc.Application) {
 	// You can use normal middlewares at MVC apps of course.
 	app.Router.Use(
 		func(ctx iris.Context) {
-			ctx.Application().Logger().Infof("Path: %s", ctx.Path())
+			ctx.Application().Logger().Infof("Path: %s Method: %s", ctx.Path(), ctx.Method())
 			ctx.Next()
 		},
-		middleware.BasicAuth,
+		middleware.AdminAuth,
 	)
 
 	// Register dependencies which will be binding to the controller(s),

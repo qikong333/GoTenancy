@@ -23,9 +23,11 @@ type Token struct {
  * oauth_token
  * @method OauthTokenCreate
  */
-func (ot *OauthToken) OauthTokenCreate() *Token {
-	database.GetGdb().Create(ot)
-	return &Token{ot.Token}
+func (ot *OauthToken) OauthTokenCreate() (*Token, error) {
+	if err := database.GetGdb().Create(ot).Error; err != nil {
+		return nil, err
+	}
+	return &Token{ot.Token}, nil
 }
 
 /**

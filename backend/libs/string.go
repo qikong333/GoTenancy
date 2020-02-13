@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/jameskeane/bcrypt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 /**
@@ -100,16 +100,17 @@ func Base64Decode(str string) string {
 	return string(s)
 }
 
-func HashPassword(pwd string) string {
-	salt, err := bcrypt.Salt(10)
-	if err !=nil {
-		return ""
-	}
-	hash, err := bcrypt.Hash(pwd, salt)
-	if err !=nil {
-		return ""
-	}
-
-	return hash
+// GeneratePassword will generate a hashed password for us based on the
+// user's input.
+func GeneratePassword(userPassword string) (string, error) {
+	password, err := bcrypt.GenerateFromPassword([]byte(userPassword), bcrypt.DefaultCost)
+	return string(password), err
 }
 
+// ValidatePassword will check if passwords are matched.
+func ValidatePassword(userPassword string, hashed string) (bool, error) {
+	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(userPassword)); err != nil {
+		return false, err
+	}
+	return true, nil
+}

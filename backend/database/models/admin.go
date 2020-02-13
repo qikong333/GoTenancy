@@ -8,9 +8,7 @@ import (
 	"GoTenancy/backend/libs"
 	"GoTenancy/backend/validates"
 	"github.com/fatih/color"
-	"github.com/iris-contrib/middleware/jwt"
 	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Admin struct {
@@ -22,6 +20,7 @@ type Admin struct {
 }
 
 func NewAdmin(id uint, username string) *Admin {
+
 	return &Admin{
 		Model: gorm.Model{
 			ID:        id,
@@ -33,6 +32,12 @@ func NewAdmin(id uint, username string) *Admin {
 }
 
 func NewAdminByStruct(ru *validates.CreateUpdateAdminRequest) *Admin {
+	password, err := libs.GeneratePassword(ru.Password)
+	if err != nil {
+		color.Red(fmt.Sprintf("NewAdminByStruct:%s \n ", err))
+		return nil
+	}
+
 	return &Admin{
 		Model: gorm.Model{
 			ID:        0,
@@ -41,7 +46,7 @@ func NewAdminByStruct(ru *validates.CreateUpdateAdminRequest) *Admin {
 		},
 		UserName: ru.UserName,
 		Name:     ru.Name,
-		Password: libs.HashPassword(ru.Password),
+		Password: password,
 	}
 }
 
@@ -90,7 +95,11 @@ func GetAllAdmins(name, orderBy string, offset, limit int) []*Admin {
  * @param  {[type]} mp int    [description]
  */
 func (u *Admin) CreateAdmin(aul *validates.CreateUpdateAdminRequest) {
-	u.Password = libs.HashPassword(aul.Password)
+	password, err := libs.GeneratePassword(aul.Password)
+	if err != nil {
+		color.Red(fmt.Sprintf("CreateAdminErr:%s \n ", err))
+	}
+	u.Password = password
 	if err := database.GetGdb().Create(u).Error; err != nil {
 		color.Red(fmt.Sprintf("CreateAdminErr:%s \n ", err))
 	}
@@ -106,7 +115,11 @@ func (u *Admin) CreateAdmin(aul *validates.CreateUpdateAdminRequest) {
  * @param  {[type]} mp int    [description]
  */
 func (u *Admin) UpdateAdmin(uj *validates.CreateUpdateAdminRequest) {
-	uj.Password = libs.HashPassword(uj.Password)
+	password, err := libs.GeneratePassword(uj.Password)
+	if err != nil {
+		color.Red(fmt.Sprintf("UpdateAdminErr:%s \n ", err))
+	}
+	uj.Password = password
 	if err := Update(u, uj); err != nil {
 		color.Red(fmt.Sprintf("UpdateAdminErr:%s \n ", err))
 	}
@@ -118,30 +131,14 @@ func (u *Admin) UpdateAdmin(uj *validates.CreateUpdateAdminRequest) {
  * @param  {[type]}  id       int    [description]
  * @param  {[type]}  password string [description]
  */
-func (u *Admin) CheckLogin(password string) (*Token, bool, string) {
+func (u *Admin) CheckLogin(password string) (bool, string) {
 	if u.ID == 0 {
-		return nil, false, "用户不存在"
+		return false, "用户不存在"
 	} else {
-		if ok,_ := ValidatePassword(password, u.Password); ok {
-			token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-				"exp": time.Now().Add(time.Hour * time.Duration(1)).Unix(),
-				"iat": time.Now().Unix(),
-			})
-			tokenString, _ := token.SignedString([]byte("HS2JDFKhu7Y1av7b"))
-
-			oauthToken := new(OauthToken)
-			oauthToken.Token = tokenString
-			oauthToken.UserId = u.ID
-			oauthToken.Secret = "secret"
-			oauthToken.Revoked = false
-			oauthToken.ExpressIn = time.Now().Add(time.Hour * time.Duration(1)).Unix()
-			oauthToken.CreatedAt = time.Now()
-
-			response := oauthToken.OauthTokenCreate()
-
-			return response, true, "登陆成功"
+		if ok, _ := libs.ValidatePassword(password, u.Password); ok {
+			return true, "登陆成功"
 		} else {
-			return nil, false, "用户名或密码错误"
+			return false, "用户名或密码错误"
 		}
 	}
 }
@@ -155,19 +152,4 @@ func AdminLogout(userId uint) bool {
 	ot := OauthToken{}
 	ot.UpdateOauthTokenByUserId(userId)
 	return ot.Revoked
-}
-
-// GeneratePassword will generate a hashed password for us based on the
-// user's input.
-func GeneratePassword(userPassword string) (string, error) {
-	password, err := bcrypt.GenerateFromPassword([]byte(userPassword), bcrypt.DefaultCost)
-	return string(password), err
-}
-
-// ValidatePassword will check if passwords are matched.
-func ValidatePassword(userPassword string, hashed string) (bool, error) {
-	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(userPassword)); err != nil {
-		return false, err
-	}
-	return true, nil
 }

@@ -34,6 +34,11 @@ func NewUser(id uint, username string) *User {
 }
 
 func NewUserByStruct(ru *validates.CreateUpdateUserRequest) *User {
+	password, err := libs.GeneratePassword(ru.Password)
+	if err != nil {
+		color.Red(fmt.Sprintf("NewUserByStruct:%s \n ", err))
+		return nil
+	}
 	return &User{
 		Model: gorm.Model{
 			ID:        0,
@@ -42,7 +47,7 @@ func NewUserByStruct(ru *validates.CreateUpdateUserRequest) *User {
 		},
 		Username: ru.Username,
 		Name:     ru.Name,
-		Password: libs.HashPassword(ru.Password),
+		Password: password,
 	}
 }
 
@@ -91,7 +96,11 @@ func GetAllUsers(name, orderBy string, offset, limit int) []*User {
  * @param  {[type]} mp int    [description]
  */
 func (u *User) CreateUser(aul *validates.CreateUpdateUserRequest) {
-	u.Password = libs.HashPassword(aul.Password)
+	password, err := libs.GeneratePassword(aul.Password)
+	if err != nil {
+		color.Red(fmt.Sprintf("CreateUser:%s \n ", err))
+	}
+	u.Password = password
 	if err := database.GetGdb().Create(u).Error; err != nil {
 		color.Red(fmt.Sprintf("CreateUserErr:%s \n ", err))
 	}
@@ -109,7 +118,11 @@ func (u *User) CreateUser(aul *validates.CreateUpdateUserRequest) {
  * @param  {[type]} mp int    [description]
  */
 func (u *User) UpdateUser(uj *validates.CreateUpdateUserRequest) {
-	uj.Password = libs.HashPassword(uj.Password)
+	password, err := libs.GeneratePassword(uj.Password)
+	if err != nil {
+		color.Red(fmt.Sprintf("CreateUser:%s \n ", err))
+	}
+	uj.Password = password
 	if err := Update(u, uj); err != nil {
 		color.Red(fmt.Sprintf("UpdateUserErr:%s \n ", err))
 	}
@@ -158,7 +171,10 @@ func (u *User) CheckLogin(password string) (*Token, bool, string) {
 			oauthToken.ExpressIn = time.Now().Add(time.Hour * time.Duration(1)).Unix()
 			oauthToken.CreatedAt = time.Now()
 
-			response := oauthToken.OauthTokenCreate()
+			response, err := oauthToken.OauthTokenCreate()
+			if err != nil {
+				return nil, false, "登陆失败"
+			}
 
 			return response, true, "登陆成功"
 		} else {

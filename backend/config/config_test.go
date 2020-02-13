@@ -84,6 +84,25 @@ func TestGetAppName(t *testing.T) {
 	}
 }
 
+func TestAppCookieNameForSessionID(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "config",
+			want: "mycookiesessionnameid",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetAppCookieNameForSessionID(); got != tt.want {
+				t.Errorf("GetAppCookieNameForSessionID() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestGetAppURl(t *testing.T) {
 	tests := []struct {
 		name string
