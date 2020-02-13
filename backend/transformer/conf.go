@@ -10,6 +10,7 @@ type Conf struct {
 	Mongodb  Mongodb
 	Sqlite   Sqlite
 	Redis    Redis
+	Admin    Admin
 	TestData TestData
 }
 
@@ -42,10 +43,14 @@ type Redis struct {
 	DB       string
 }
 
+type Admin struct {
+	UserName string
+	Name     string
+	Pwd      string
+}
+
 type TestData struct {
-	UserName        string
-	Name            string
-	Pwd             string
-	DataBaseDriver  string
-	DataBaseConnect string
+	UserName string
+	Name     string
+	Pwd      string
 }

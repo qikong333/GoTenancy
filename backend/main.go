@@ -11,12 +11,21 @@ import (
 	"github.com/betacraft/yaag/yaag"
 	"github.com/fatih/color"
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/mvc"
 )
 
 func NewApp() *iris.Application {
 	app := iris.New()
 	app.Logger().SetLevel(config.GetAppLoggerLevel())
-	app.RegisterView(iris.HTML("resources", ".html"))
+
+	app.RegisterView(
+		iris.HTML("resources", ".html"). // 加载模版文件
+							Layout("shared/layout.html"). // 增加布局模版
+							Reload(true),                 // 增加静态文件重载
+	)
+	admin := app.Party("admin.")
+	admin.HandleDir("/admin", "resources/admin") // 注册管理端静态文件
+	mvc.Configure(admin, routes.AdminMVC)        // 注册管理端 mvc
 
 	db := database.GetGdb()
 	db.AutoMigrate(

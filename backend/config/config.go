@@ -57,6 +57,11 @@ func getTfConf(isc iris.Configuration) *transformer.Conf {
 	g.InsertObj = isc.Other["Sqlite"]
 	_ = g.Transformer()
 
+	admin := transformer.Admin{}
+	g.OutputObj = &admin
+	g.InsertObj = isc.Other["Admin"]
+	_ = g.Transformer()
+
 	testData := transformer.TestData{}
 	g.OutputObj = &testData
 	g.InsertObj = isc.Other["TestData"]
@@ -122,6 +127,18 @@ func GetSqliteConnect() string {
 
 func GetSqliteTConnect() string {
 	return files.GetAbsPath(getTc().Sqlite.TConnect)
+}
+
+func GetAdminUserName() string {
+	return getTc().Admin.UserName
+}
+
+func GetAdminName() string {
+	return getTc().Admin.Name
+}
+
+func GetAdminPwd() string {
+	return getTc().Admin.Pwd
 }
 
 func GetTestDataUserName() string {

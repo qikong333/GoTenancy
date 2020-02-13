@@ -264,13 +264,70 @@ func TestGetTestDataUserName(t *testing.T) {
 	}{
 		{
 			name: "config",
-			want: "username",
+			want: "admin",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := GetTestDataUserName(); got != tt.want {
 				t.Errorf("GetTestDataUserName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetAdminName(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "config",
+			want: "超级管理员",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetAdminName(); got != tt.want {
+				t.Errorf("GetAdminName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetAdminPwd(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "config",
+			want: "password",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetAdminPwd(); got != tt.want {
+				t.Errorf("GetAdminPwd() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetAdminUserName(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "config",
+			want: "username",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetAdminUserName(); got != tt.want {
+				t.Errorf("GetAdminUserName() = %v, want %v", got, tt.want)
 			}
 		})
 	}
