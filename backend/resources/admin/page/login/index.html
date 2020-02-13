@@ -185,11 +185,28 @@
                 layer.msg('验证码不能为空');
                 return false;
             }
-            layer.msg('登录成功', function () {
-                window.location = '/index.html';
+            $.ajax({
+                url: 'login',
+                method: 'post',
+                data: data.field,
+                dataType: 'JSON',
+                success: function (res) {
+                    // if (res.status) {
+                    //     layer.msg('登录成功', function () {
+                    //         window.location = '/';
+                    //     });
+                    // } else{
+                    //     layer.msg(res.msg);
+                    // }
+                },
+                error: function (data) {
+
+                }
             });
+
             return false;
         });
+
     });
 </script>
 </body>
