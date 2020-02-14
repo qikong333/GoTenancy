@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"GoTenancy/backend/config"
+	"GoTenancy/backend/redis"
 	"github.com/kataras/iris/v12/sessions"
 )
 
@@ -24,6 +25,7 @@ func Singleton() *sessions.Sessions {
 				Expires:      4 * time.Hour,
 			},
 		)
+		sess.UseDatabase(redis.Singleton())
 	})
 	return sess
 }

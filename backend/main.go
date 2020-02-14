@@ -7,7 +7,7 @@ import (
 	"GoTenancy/backend/database"
 	"GoTenancy/backend/database/models"
 	"GoTenancy/backend/logs"
-	redis2 "GoTenancy/backend/redis"
+	"GoTenancy/backend/redis"
 	"GoTenancy/backend/routes"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/fatih/color"
@@ -31,9 +31,8 @@ func NewApp() *iris.Application {
 	db := database.GetGdb()
 	models.AutoMigrate()
 
-	redis := redis2.Singleton()
 	iris.RegisterOnInterrupt(func() {
-		redisErr := redis.Close()
+		redisErr := redis.Singleton().Close()
 		if redisErr != nil {
 			color.Red(fmt.Sprintf("redis: %v", redisErr))
 		}
@@ -42,8 +41,7 @@ func NewApp() *iris.Application {
 			color.Red(fmt.Sprintf("db: %v", dbErr))
 		}
 	})
-	defer redis.Close() // close the database connection if application errored.
-	//session.Singleton().UseDatabase(redis)
+	//defer redis.Singleton().Close() // 解开注释会报错
 
 	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware. //api 文档配置
 		On:       true,

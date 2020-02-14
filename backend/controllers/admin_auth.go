@@ -55,9 +55,6 @@ func (c *AdminAuthController) PostLogin() {
 	if status {
 		c.Ctx.Application().Logger().Infof("%s 登录系统", aul.Username)
 		session.Singleton().Start(c.Ctx).Set(session.UserIDKey, int64(admin.ID))
-		id := session.Singleton().Start(c.Ctx).GetInt64Default(session.UserIDKey, 0)
-
-		color.Red(fmt.Sprintf("UserIDKey %v", id))
 	}
 	_, _ = c.Ctx.JSON(ApiResource(status, nil, msg))
 	return
