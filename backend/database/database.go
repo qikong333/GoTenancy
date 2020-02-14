@@ -28,7 +28,7 @@ type dataBase struct {
 *设置数据库连接
 *@param diver string
  */
-func getDataBase() *dataBase {
+func singleton() *dataBase {
 	once.Do(func() {
 		driverName, conn := getDriverNameAndConn()
 		gdb, err := gorm.Open(driverName, conn)
@@ -41,7 +41,7 @@ func getDataBase() *dataBase {
 			color.Red(fmt.Sprintf("NewAdapter 错误: %v", err))
 		}
 
-		e, err := casbin.NewEnforcer(files.GetAbsPath("./backend/database/rbac_model.conf"), c)
+		e, err := casbin.NewEnforcer(files.GetAbsPath("./database/rbac_model.conf"), c)
 		if err != nil {
 			color.Red(fmt.Sprintf("NewEnforcer 错误: %v", err))
 		}
@@ -82,12 +82,12 @@ func getDriverNameAndConn() (string, string) {
 
 // 访问数据库实例
 func GetGdb() *gorm.DB {
-	return getDataBase().Db
+	return singleton().Db
 }
 
 // 访问 casbin 实例
 func GetEnforcer() *casbin.Enforcer {
-	return getDataBase().Enforcer
+	return singleton().Enforcer
 }
 
 func isTestEnv() bool {

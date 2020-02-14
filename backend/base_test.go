@@ -38,17 +38,15 @@ func getHttpexpect(t *testing.T) *httpexpect.Expect {
 	return httptest.New(t, app, httptest.Configuration{Debug: true, URL: "http://app.irisadminapi.com/v1/admin/"})
 }
 
-
 // 单元测试 login 方法
 func login(t *testing.T, Object interface{}, StatusCode int, Status bool, Msg string) (e *httpexpect.Expect) {
 	e = getHttpexpect(t)
-	e.POST( "login").WithJSON(Object).
+	e.POST("login").WithJSON(Object).
 		Expect().Status(StatusCode).
 		JSON().Object().Values().Contains(Status, Msg)
 
 	return
 }
-
 
 // 单元测试 create 方法
 func create(t *testing.T, url string, Object interface{}, StatusCode int, Status bool, Msg string) (e *httpexpect.Expect) {
@@ -140,7 +138,7 @@ func CreateUser() *models.User {
 	rr := &validates.CreateUpdateUserRequest{
 		Username: "TUsername",
 		Password: "TPassword",
-		Name:     "TName",
+		Name:     "TNamefdf",
 		RoleIds:  []uint{},
 	}
 
@@ -162,7 +160,7 @@ func GetOauthToken(e *httpexpect.Expect) string {
 		"username": config.GetTestDataUserName(),
 		"password": config.GetTestDataPwd(),
 	}
-	r := e.POST( "login").WithJSON(oj).
+	r := e.POST("login").WithJSON(oj).
 		Expect().
 		Status(http.StatusOK).JSON().Object()
 

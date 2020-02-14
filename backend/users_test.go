@@ -16,11 +16,11 @@ func TestUserProfile(t *testing.T) {
 }
 
 func TestUserCreate(t *testing.T) {
-	tr := CreateRole("tname3", "tdsiName", "tdec")
+	tr := CreateRole("tname3sdfsd", "tdsiNamsdfe", "tdecsdfsd")
 	oj := map[string]interface{}{
-		"username": "test_user",
+		"username": "test_user12",
 		"password": "password",
-		"name":     "name",
+		"name":     "test_name",
 		"role_ids": []uint{tr.ID},
 	}
 

@@ -2,21 +2,18 @@ package controllers
 
 import (
 	"GoTenancy/backend/config"
-	"GoTenancy/backend/database/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
-	"github.com/kataras/iris/v12/sessions"
 )
 
 type AdminController struct {
-	Service services.UserService
-	Ctx     iris.Context
-	Session *sessions.Session
+	BaseAdminController
 }
 
 func (c *AdminController) Get() mvc.Result {
+	c.Ctx.ViewLayout(iris.NoLayout)
 	view := mvc.View{
-		Name: "admin/page/index.html",
+		Name: "admin/index.html",
 		Data: iris.Map{
 			"Title":   config.GetAppName(),
 			"AppName": config.GetAppName(),

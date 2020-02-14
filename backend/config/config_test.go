@@ -13,7 +13,7 @@ func TestGetAppCreateSysData(t *testing.T) {
 		want bool
 	}{
 		{
-			name: "config",
+			name: "TestGetAppCreateSysData",
 			want: true,
 		},
 	}
@@ -33,7 +33,7 @@ func TestGetAppDriverType(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetAppDriverType",
 			want: "Sqlite",
 		},
 	}
@@ -52,7 +52,7 @@ func TestGetAppLoggerLevel(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetAppLoggerLevel",
 			want: "debug",
 		},
 	}
@@ -71,7 +71,7 @@ func TestGetAppName(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetAppName",
 			want: "GoTenancy",
 		},
 	}
@@ -90,7 +90,7 @@ func TestAppCookieNameForSessionID(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestAppCookieNameForSessionID",
 			want: "mycookiesessionnameid",
 		},
 	}
@@ -109,7 +109,7 @@ func TestGetAppURl(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetAppURl",
 			want: "irisadminapi.com:80",
 		},
 	}
@@ -128,7 +128,7 @@ func TestGetMongodbConnect(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetMongodbConnect",
 			want: "mongodb://root:123456@127.0.0.1:27017/admin",
 		},
 	}
@@ -147,7 +147,7 @@ func TestGetMysqlConnect(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetMysqlConnect",
 			want: "root:([a-z]+)@(127.0.0.1:3306)/",
 		},
 	}
@@ -168,7 +168,7 @@ func TestGetMysqlName(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetMysqlName",
 			want: "iris",
 		},
 	}
@@ -187,7 +187,7 @@ func TestGetMysqlTName(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetMysqlTName",
 			want: "tiris",
 		},
 	}
@@ -206,7 +206,7 @@ func TestGetSqliteConnect(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetSqliteConnect",
 			want: files.GetAbsPath("./tmp/gorm.db"),
 		},
 	}
@@ -225,7 +225,7 @@ func TestGetSqliteTConnect(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetSqliteTConnect",
 			want: files.GetAbsPath("./tmp/tgorm.db"),
 		},
 	}
@@ -244,7 +244,7 @@ func TestGetTestDataName(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetTestDataName",
 			want: "超级管理员",
 		},
 	}
@@ -263,7 +263,7 @@ func TestGetTestDataPwd(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetTestDataPwd",
 			want: "password",
 		},
 	}
@@ -282,8 +282,8 @@ func TestGetTestDataUserName(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
-			want: "admin",
+			name: "TestGetTestDataUserName",
+			want: "username",
 		},
 	}
 	for _, tt := range tests {
@@ -301,8 +301,8 @@ func TestGetAdminName(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
-			want: "超级管理员",
+			name: "TestGetAdminName",
+			want: "后端管理员",
 		},
 	}
 	for _, tt := range tests {
@@ -320,7 +320,7 @@ func TestGetAdminPwd(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
+			name: "TestGetAdminPwd",
 			want: "password",
 		},
 	}
@@ -339,14 +339,71 @@ func TestGetAdminUserName(t *testing.T) {
 		want string
 	}{
 		{
-			name: "config",
-			want: "username",
+			name: "TestGetAdminUserName",
+			want: "gotenancy",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := GetAdminUserName(); got != tt.want {
 				t.Errorf("GetAdminUserName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetRedisAddr(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "TestGetRedisAddr",
+			want: "127.0.0.1:6379",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetRedisAddr(); got != tt.want {
+				t.Errorf("GetRedisAddr() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetRedisDb(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "TestGetRedisDb",
+			want: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetRedisDb(); got != tt.want {
+				t.Errorf("GetRedisDb() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetRedisPwd(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		{
+			name: "TestGetRedisPwd",
+			want: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetRedisPwd(); got != tt.want {
+				t.Errorf("GetRedisPwd() = %v, want %v", got, tt.want)
 			}
 		})
 	}

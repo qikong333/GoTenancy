@@ -17,10 +17,13 @@ import (
  */
 func CreateSystemData(perms []*validates.PermissionRequest) {
 	if config.GetAppCreateSysData() {
+		CreateSystemAdmin() //后端管理员
+
+		// 租户端公用系统数据
 		permIds := CreateSystemAdminPermission(perms) //初始化权限
 		role := CreateSystemAdminRole(permIds)        //初始化角色
 		if role.ID != 0 {
-			CreateSystemAdmin(role.ID) //初始化管理员
+			CreateSystemUser(role.ID) //初始化管理员
 		}
 	}
 }
@@ -30,7 +33,7 @@ func CreateSystemData(perms []*validates.PermissionRequest) {
 *@param role_id uint
 *@return   *models.AdminUserTranform api格式化后的数据格式
  */
-func CreateSystemAdmin(roleId uint) {
+func CreateSystemUser(roleId uint) {
 	aul := &validates.CreateUpdateUserRequest{
 		Username: config.GetTestDataUserName(),
 		Password: config.GetTestDataPwd(),
@@ -82,6 +85,23 @@ func CreateSystemAdminPermission(perms []*validates.PermissionRequest) []uint {
 	return permIds
 }
 
+/**
+ * 后端管理员
+ */
+func CreateSystemAdmin() {
+	cuar := &validates.CreateUpdateAdminRequest{
+		Name:     config.GetAdminName(),
+		Username: config.GetAdminUserName(),
+		Password: config.GetAdminPwd(),
+	}
+
+	admin := NewAdminByStruct(cuar)
+	admin.GetAdminByUserName()
+	if admin.ID == 0 {
+		admin.CreateAdmin(cuar)
+	}
+}
+
 func IsNotFound(err error) {
 	if ok := errors.Is(err, gorm.ErrRecordNotFound); !ok && err != nil {
 		color.Red(fmt.Sprintf("error :%v \n ", err))
@@ -122,6 +142,7 @@ func DelAllData() {
 	database.GetGdb().Unscoped().Delete(&Permission{})
 	database.GetGdb().Unscoped().Delete(&Role{})
 	database.GetGdb().Unscoped().Delete(&User{})
+	database.GetGdb().Unscoped().Delete(&Admin{})
 	database.GetGdb().Exec("DELETE FROM casbin_rule;")
 }
 
@@ -147,6 +168,19 @@ func GetRolesForUser(uid uint) []string {
 // 获取角色权限 （注意不是用户权限）
 func GetPermissionsForUser(uid uint) [][]string {
 	return database.GetEnforcer().GetPermissionsForUser(strconv.FormatUint(uint64(uid), 10))
+}
+
+// 自动创建表结构
+func AutoMigrate() {
+	database.GetGdb().AutoMigrate(
+		&User{},
+		&OauthToken{},
+		&Role{},
+		&Permission{},
+		&Admin{},
+		&App{},
+		&Tenancy{},
+	)
 }
 
 // 删除数据表

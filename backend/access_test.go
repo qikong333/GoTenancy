@@ -43,7 +43,7 @@ func TestUserLoginWithNoUsername(t *testing.T) {
 		"username": "",
 		"password": "admin",
 	}
-	login(t, oj, iris.StatusOK, false, "用户名为必填字段")
+	login(t, oj, iris.StatusOK, false, "用户名为必填字段;")
 }
 
 // 不输入密码
@@ -53,7 +53,7 @@ func TestUserLoginWithNoPwd(t *testing.T) {
 		"username": "username",
 		"password": "",
 	}
-	login(t, oj, iris.StatusOK, false, "密码为必填字段")
+	login(t, oj, iris.StatusOK, false, "密码为必填字段;")
 }
 
 // 输入登陆密码格式错误
@@ -70,7 +70,18 @@ func TestUserLoginWithErrorFormtPwd(t *testing.T) {
 func TestUserLoginWithErrorFormtUserName(t *testing.T) {
 
 	oj := map[string]string{
-		"username": "df",
+		"username": "sd",
+		"password": "123",
+	}
+
+	login(t, oj, iris.StatusOK, false, "用户名长度必须至少为5个字符;")
+}
+
+// 输入登陆密码格式错误
+func TestUserLoginWithNotexistUserName(t *testing.T) {
+
+	oj := map[string]string{
+		"username": "sdfsdfsdfsdf",
 		"password": "123",
 	}
 

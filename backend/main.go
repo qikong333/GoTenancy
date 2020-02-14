@@ -7,6 +7,7 @@ import (
 	"GoTenancy/backend/database"
 	"GoTenancy/backend/database/models"
 	"GoTenancy/backend/logs"
+	redis2 "GoTenancy/backend/redis"
 	"GoTenancy/backend/routes"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/fatih/color"
@@ -28,16 +29,21 @@ func NewApp() *iris.Application {
 	mvc.Configure(admin, routes.AdminMVC)        // 注册管理端 mvc
 
 	db := database.GetGdb()
-	db.AutoMigrate(
-		&models.User{},
-		&models.OauthToken{},
-		&models.Role{},
-		&models.Permission{},
-	)
+	models.AutoMigrate()
 
+	redis := redis2.Singleton()
 	iris.RegisterOnInterrupt(func() {
-		_ = db.Close()
+		redisErr := redis.Close()
+		if redisErr != nil {
+			color.Red(fmt.Sprintf("redis: %v", redisErr))
+		}
+		dbErr := db.Close()
+		if dbErr != nil {
+			color.Red(fmt.Sprintf("db: %v", dbErr))
+		}
 	})
+	defer redis.Close() // close the database connection if application errored.
+	//session.Singleton().UseDatabase(redis)
 
 	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware. //api 文档配置
 		On:       true,
@@ -62,6 +68,6 @@ func main() {
 	//app.Logger().SetOutput(f) //记录日志
 	err := app.Run(iris.Addr(config.GetAppUrl()), iris.WithConfiguration(config.GetIrisConf()))
 	if err != nil {
-		color.Yellow(fmt.Sprintf("项目运行结束: %v", err))
+		color.Red(fmt.Sprintf("项目运行结束: %v", err))
 	}
 }

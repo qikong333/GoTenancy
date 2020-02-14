@@ -147,6 +147,9 @@
                 <div class="layui-form-item">
                     <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="login">登 入</button>
                 </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn layui-btn-danger" lay-submit="" lay-filter="resert">初始化系统数据</button>
+                </div>
             </form>
         </div>
     </div>
@@ -188,16 +191,32 @@
             $.ajax({
                 url: 'login',
                 method: 'post',
-                data: data.field,
+                data: JSON.stringify(data),
                 dataType: 'JSON',
                 success: function (res) {
-                    // if (res.status) {
-                    //     layer.msg('登录成功', function () {
-                    //         window.location = '/';
-                    //     });
-                    // } else{
-                    //     layer.msg(res.msg);
-                    // }
+                    if (res.status) {
+                        layer.msg(res.msg, function () {
+                            window.location = '/home';
+                        });
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                },
+                error: function (data) {
+
+                }
+            });
+
+            return false;
+        });        // 进行登录操作
+        form.on('submit(resert)', function (data) {
+
+            $.ajax({
+                url: 'resert',
+                method: 'GET',
+                dataType: 'JSON',
+                success: function (res) {
+                    layer.msg(res.msg);
                 },
                 error: function (data) {
 
@@ -206,7 +225,6 @@
 
             return false;
         });
-
     });
 </script>
 </body>

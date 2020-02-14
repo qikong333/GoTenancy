@@ -1,13 +1,10 @@
 package routes
 
 import (
-	"time"
-
-	"GoTenancy/backend/config"
 	"GoTenancy/backend/controllers"
+	"GoTenancy/backend/middleware"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
-	"github.com/kataras/iris/v12/sessions"
 )
 
 func AdminMVC(app *mvc.Application) {
@@ -21,12 +18,6 @@ func AdminMVC(app *mvc.Application) {
 	app.Handle(new(controllers.AdminAuthController))
 
 	party := app.Party("/home")
-	party.Register(
-		sessions.New(sessions.Config{
-			Cookie:  config.GetAppCookieNameForSessionID(),
-			Expires: 24 * time.Hour,
-		}),
-	)
-	//party.Router.Use(middleware.AdminAuth)
+	party.Router.Use(middleware.AdminAuth)
 	party.Handle(new(controllers.AdminController))
 }

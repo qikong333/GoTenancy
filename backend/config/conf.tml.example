@@ -20,14 +20,17 @@ Charset = "UTF-8"
     [Other.Mongodb]
         Connect = "mongodb://root:123456@127.0.0.1:27017/admin"
     [Other.Sqlite]
-        Connect = "./backend/tmp/gorm.db"
-        TConnect = "./backend/tmp/tgorm.db"
-#    [Other.Redis]
-#      Addr = "127.0.0.1:6379"
-#      Password = ""
-#      DB = "0"
-
+        Connect = "./tmp/gorm.db"
+        TConnect = "./tmp/tgorm.db"
+   [Other.Redis]
+      Addr = "127.0.0.1:6379"
+      Password = ""
+      DB = ""
+    [Other.Admin]
+        UserName = "gotenancy"
+        Name = "后端管理员"
+        Pwd = "password"
     [Other.TestData]
-          UserName = "username" #管理员用户名
-          Name = "超级管理员"  #管理员名称
-          Pwd = "password" #管理员密码
+        UserName = "username" #管理员用户名
+        Name = "超级管理员"  #管理员名称
+        Pwd = "password" #管理员密码

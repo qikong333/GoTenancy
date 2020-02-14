@@ -15,19 +15,18 @@ type Admin struct {
 	gorm.Model
 
 	Name     string `gorm:"not null VARCHAR(191)"`
-	UserName string `gorm:"unique;VARCHAR(191)"`
+	Username string `gorm:"unique;VARCHAR(191)"`
 	Password string `gorm:"not null VARCHAR(191)"`
 }
 
 func NewAdmin(id uint, username string) *Admin {
-
 	return &Admin{
 		Model: gorm.Model{
 			ID:        id,
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		},
-		UserName: username,
+		Username: username,
 	}
 }
 
@@ -44,14 +43,14 @@ func NewAdminByStruct(ru *validates.CreateUpdateAdminRequest) *Admin {
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		},
-		UserName: ru.UserName,
+		Username: ru.Username,
 		Name:     ru.Name,
 		Password: password,
 	}
 }
 
 func (u *Admin) GetAdminByUserName() {
-	IsNotFound(database.GetGdb().Where("username = ?", u.UserName).First(u).Error)
+	IsNotFound(database.GetGdb().Where("username = ?", u.Username).First(u).Error)
 }
 
 func (u *Admin) GetAdminById() {
@@ -141,15 +140,4 @@ func (u *Admin) CheckLogin(password string) (bool, string) {
 			return false, "用户名或密码错误"
 		}
 	}
-}
-
-/**
-* 用户退出登陆
-* @method AdminAdminLogout
-* @param  {[type]} ids string [description]
- */
-func AdminLogout(userId uint) bool {
-	ot := OauthToken{}
-	ot.UpdateOauthTokenByUserId(userId)
-	return ot.Revoked
 }

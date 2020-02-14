@@ -1,21 +1,20 @@
 package controllers
 
 import (
+	"fmt"
+
 	"GoTenancy/backend/config"
 	"GoTenancy/backend/database/models"
-	"GoTenancy/backend/database/services"
+	"GoTenancy/backend/routepath"
+	"GoTenancy/backend/session"
 	"GoTenancy/backend/validates"
+	"github.com/fatih/color"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
-	"github.com/kataras/iris/v12/sessions"
 )
 
-const userIDKey = "UserID"
-
 type AdminAuthController struct {
-	Service services.UserService
-	Ctx     iris.Context
-	Session *sessions.Session
+	BaseAdminController
 }
 
 func (c *AdminAuthController) Get() {
@@ -34,25 +33,49 @@ func (c *AdminAuthController) GetLogin() mvc.Result {
 	return view
 }
 
-func (c *AdminController) PostLogin() {
+func (c *AdminAuthController) PostLogin() {
+
 	aul := new(validates.AdminLoginRequest)
 	if err := c.Ctx.ReadJSON(aul); err != nil {
-		c.Ctx.Redirect("login")
+		color.Red(fmt.Sprintf("ReadJSON:%v", err))
+		_, _ = c.Ctx.JSON(ApiResource(false, nil, err.Error()))
+		return
 	}
 
 	if formErrs := aul.Valid(); len(formErrs) > 0 {
-		c.Ctx.Redirect("login")
+		color.Red(fmt.Sprintf("Valid:%v", formErrs))
+		_, _ = c.Ctx.JSON(ApiResource(false, nil, formErrs))
+		return
 	}
 
-	admin := models.NewAdmin(0, aul.UserName)
+	admin := models.NewAdmin(0, aul.Username)
 	admin.GetAdminByUserName()
 
-	status, _ := admin.CheckLogin(aul.Password)
+	status, msg := admin.CheckLogin(aul.Password)
 	if status {
-		c.Ctx.Application().Logger().Infof("%s 登录系统", aul.UserName)
-		c.Session.Set(userIDKey, admin.ID)
-	} else {
-		c.Ctx.Redirect("login")
-	}
+		c.Ctx.Application().Logger().Infof("%s 登录系统", aul.Username)
+		session.Singleton().Start(c.Ctx).Set(session.UserIDKey, int64(admin.ID))
+		id := session.Singleton().Start(c.Ctx).GetInt64Default(session.UserIDKey, 0)
 
+		color.Red(fmt.Sprintf("UserIDKey %v", id))
+	}
+	_, _ = c.Ctx.JSON(ApiResource(status, nil, msg))
+	return
+
+}
+
+func (c *AdminAuthController) AnyLogout() {
+	if b := session.Singleton().Start(c.Ctx).Delete(session.UserIDKey); b {
+		_, _ = c.Ctx.JSON(ApiResource(true, nil, "退出登陆"))
+		return
+	}
+	_, _ = c.Ctx.JSON(ApiResource(false, nil, "退出失败"))
+}
+
+func (c *AdminAuthController) GetResert() {
+	models.DelAllData()
+	routes := routepath.GetRoutes(c.Ctx.Application().GetRoutesReadOnly())
+	models.CreateSystemData(routes) // 初始化系统数据 账号，角色，权限
+	c.Ctx.StatusCode(iris.StatusOK)
+	_, _ = c.Ctx.JSON(ApiResource(true, routes, "重置数据成功"))
 }

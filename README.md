@@ -93,6 +93,8 @@ cp conf.tml.example conf.tml
 ```shell script
 go get github.com/silenceper/gowatch
 
+cd backend // 后端代码目录
+
 gowatch //安装 gowatch 后才可以使用
 
 go run main.go // go 命令
@@ -143,7 +145,15 @@ https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js
 项目管理员密码 ： password
 
 
-#### 演示地址
+#### 演示图片
+
+##### 管理端：
+![](/GoTenancylogin.png)
+![](/GoTenancyIndex.png)
+
+##### 租户端：
+![](/GoTenancyAppLogin.png)
+![](/GoTenancyAppIndex.png)
 
 
 ###### Iris-go 学习交流QQ群 ：676717248

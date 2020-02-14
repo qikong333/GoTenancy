@@ -131,13 +131,12 @@ func compress(file *os.File, prefix string, zw *zip.Writer) error {
 func GetAbsPath(confPath string) string {
 	getwd, err := os.Getwd()
 	if err != nil {
-		color.Red(fmt.Sprintf("Getwd err %v",err) )
+		color.Red(fmt.Sprintf("Getwd err %v", err))
 	}
 
 	end := filepath.Base(getwd)
-
-	if end != "GoTenancy" {
-		return filepath.Join(filepath.Dir(getwd) , confPath)
+	if end != "backend" { // 项目运行目录
+		return filepath.Join(filepath.Dir(getwd), confPath)
 	}
 
 	return confPath

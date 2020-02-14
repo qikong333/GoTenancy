@@ -23,9 +23,10 @@ type config struct {
 var cfg *config
 var once sync.Once
 
-func single() *config {
+func singleton() *config {
 	once.Do(func() {
-		isc := iris.TOML(files.GetAbsPath("./backend/config/conf.tml")) // 加载配置文件
+		path := files.GetAbsPath("./config/conf.tml")
+		isc := iris.TOML(path) // 加载配置文件
 		tc := getTfConf(isc)
 		cfg = &config{Tc: tc, Isc: isc}
 	})
@@ -33,6 +34,7 @@ func single() *config {
 }
 
 func getTfConf(isc iris.Configuration) *transformer.Conf {
+
 	app := transformer.App{}
 	g := gf.NewTransform(&app, isc.Other["App"], time.RFC3339)
 	_ = g.Transformer()
@@ -73,16 +75,17 @@ func getTfConf(isc iris.Configuration) *transformer.Conf {
 		Mongodb:  mongodb,
 		Redis:    redis,
 		Sqlite:   sqlite,
+		Admin:    admin,
 		TestData: testData,
 	}
 }
 
 func GetIrisConf() iris.Configuration {
-	return single().Isc
+	return singleton().Isc
 }
 
 func getTc() *transformer.Conf {
-	return single().Tc
+	return singleton().Tc
 }
 
 func GetAppName() string {
@@ -131,6 +134,18 @@ func GetSqliteConnect() string {
 
 func GetSqliteTConnect() string {
 	return files.GetAbsPath(getTc().Sqlite.TConnect)
+}
+
+func GetRedisAddr() string {
+	return getTc().Redis.Addr
+}
+
+func GetRedisPwd() string {
+	return getTc().Redis.Password
+}
+
+func GetRedisDb() string {
+	return getTc().Redis.DB
 }
 
 func GetAdminUserName() string {
