@@ -17,13 +17,14 @@
 - 前端采用了 `element-ui` 框架,代码集成到 `front` 目录
 - 使用 `casbin` 做权限控制, `./backendconfig/rbac_model.conf` 为相关配置。系统会根据路由名称生成对应路由权限，并配置到管理员角色。
 - 增加系统日志记录 `./backend/logs` 文件夹下，自定义记录，控制器内 `ctx.Application().Logger().Infof("%s 登录系统",aul.Username)`
-- 增加多商户，多应用支持。
+- 默认数据库设置为   `DriverType = "Sqlite"` ，使用 mysql 需要修改为 `DriverType = "Mysql"` ,在 `./backendconfig/conf.tml` 文件中
+- `permissions.xlsx` 权限导入测试模板文件，仅供测试使用; 权限会自动生成，无需另外导入。
+- 增加 SaaS 多商户模块支持(功能开发中)
+- 定时任务功能增加，目录位于 /tasks ，直接使用的 beego 的 [toolbox](https://beego.me/docs/module/toolbox.md) 功能。
 
  **注意：**
  - 更新代码后，如果启动报错，请尝试手动删所有数据表后重启。
- - 默认数据库设置为   `DriverType = "Sqlite"` ，使用 mysql 需要修改为 `DriverType = "Mysql"` ,在 `./backendconfig/conf.tml` 文件中
- - `permissions.xlsx` 权限导入测试模板文件，仅供测试使用; 权限会自动生成，无需另外导入。
-  - 增加 SaaS 多商户模块支持(功能开发中)
+
 ---
 
 ---

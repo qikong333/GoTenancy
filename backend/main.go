@@ -9,6 +9,7 @@ import (
 	"GoTenancy/backend/logs"
 	"GoTenancy/backend/redis"
 	"GoTenancy/backend/routes"
+	"GoTenancy/backend/tasks"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/fatih/color"
 	"github.com/kataras/iris/v12"
@@ -54,6 +55,7 @@ func NewApp() *iris.Application {
 	})
 
 	routes.New(app) //注册 app 路由
+	tasks.New()
 
 	return app
 }
