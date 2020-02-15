@@ -103,15 +103,24 @@
 <script src="admin/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
 <script>
     layui.use(['element', 'layer', 'layuimini'], function () {
-        var $ = layui.jquery,
-            element = layui.element,
-            layer = layui.layer;
+        var $ = layui.jquery, element = layui.element, layer = layui.layer;
 
         layuimini.init('admin/api/init.json');
 
         $('.login-out').on("click", function () {
-            layer.msg('退出登录成功', function () {
-                window.location = 'admin/page/login-1.html';
+            $.ajax({
+                url: 'logout',
+                method: 'GET',
+                dataType: 'JSON',
+                success: function (res) {
+                    layer.msg(res.msg,{
+                        time:200,
+                    },function (){
+                        window.location = "/login"
+                    });
+                },
+                error: function (data) {
+                }
             });
         });
     });

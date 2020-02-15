@@ -8,7 +8,7 @@
     "href": "admin/page/welcome-1.html?mpi=m-p-i-0"
   },
   "logoInfo": {
-    "title": "LayuiMini",
+    "title": "GoTenancy",
     "image": "admin/images/logo.png",
     "href": ""
   },
@@ -18,30 +18,10 @@
       "icon": "fa fa-address-book",
       "child": [
         {
-          "title": "主页模板",
-          "href": "",
-          "icon": "fa fa-home",
-          "target": "_self",
-          "child": [
-            {
-              "title": "主页一",
-              "href": "admin/page/welcome-1.html",
-              "icon": "fa fa-tachometer",
-              "target": "_self"
-            },
-            {
-              "title": "主页二",
-              "href": "admin/page/welcome-2.html",
-              "icon": "fa fa-tachometer",
-              "target": "_self"
-            },
-            {
-              "title": "主页三",
-              "href": "admin/page/welcome-3.html",
-              "icon": "fa fa-tachometer",
-              "target": "_self"
-            }
-          ]
+          "title": "主页",
+          "href": "admin/page/welcome-1.html",
+          "icon": "fa fa-tachometer",
+          "target": "_self"
         },
         {
           "title": "菜单管理",
