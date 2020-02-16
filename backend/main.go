@@ -6,6 +6,7 @@ import (
 	"GoTenancy/backend/config"
 	"GoTenancy/backend/database"
 	"GoTenancy/backend/database/models"
+	"GoTenancy/backend/libs"
 	"GoTenancy/backend/logs"
 	"GoTenancy/backend/redis"
 	"GoTenancy/backend/routes"
@@ -42,7 +43,6 @@ func NewApp() *iris.Application {
 			color.Red(fmt.Sprintf("db: %v", dbErr))
 		}
 	})
-	//defer redis.Singleton().Close() // 解开注释会报错
 
 	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware. //api 文档配置
 		On:       true,
@@ -63,6 +63,9 @@ func NewApp() *iris.Application {
 func main() {
 	f := logs.NewLog()
 	defer f.Close()
+
+	defer libs.StopTask()
+	defer redis.Singleton().Close()
 
 	app := NewApp()
 	//app.Logger().SetOutput(f) //记录日志

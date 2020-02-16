@@ -46,7 +46,7 @@ func New() {
 	testTask := testTask()
 	libs.AddTask("testTask", testTask)
 	libs.StartTask()
-	//defer libs.StopTask()
+
 }
 
 func testTask() *libs.Task {

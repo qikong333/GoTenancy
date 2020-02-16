@@ -8,7 +8,7 @@ import (
 	"github.com/kataras/iris/v12/sessions/sessiondb/redis"
 )
 
-var db *redis.Database
+var rd *redis.Database
 var once sync.Once
 
 /**
@@ -17,7 +17,7 @@ var once sync.Once
  */
 func Singleton() *redis.Database {
 	once.Do(func() {
-		db = redis.New(redis.Config{
+		rd = redis.New(redis.Config{
 			Network:   "tcp",
 			Addr:      config.GetRedisAddr(),
 			Timeout:   time.Duration(30) * time.Second,
@@ -29,6 +29,5 @@ func Singleton() *redis.Database {
 			Driver:    redis.Redigo(), // redis.Radix() can be used instead.
 		})
 	})
-
-	return db
+	return rd
 }
