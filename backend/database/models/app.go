@@ -13,7 +13,8 @@ import (
 type App struct {
 	gorm.Model
 
-	Name string `gorm:"not null VARCHAR(191)"`
+	Name     string     `gorm:"not null VARCHAR(191)"`
+	Tenancys []*Tenancy `gorm:"many2many:tenancy_apps;"`
 }
 
 func NewApp(id uint, name string) *App {

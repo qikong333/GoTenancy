@@ -17,9 +17,10 @@ import (
 type User struct {
 	gorm.Model
 
-	Name     string `gorm:"not null VARCHAR(191)"`
-	Username string `gorm:"unique;VARCHAR(191)"`
-	Password string `gorm:"not null VARCHAR(191)"`
+	Name      string `gorm:"not null VARCHAR(191)"`
+	Username  string `gorm:"unique;VARCHAR(191)"`
+	Password  string `gorm:"not null VARCHAR(191)"`
+	TenancyID uint
 }
 
 func NewUser(id uint, username string) *User {

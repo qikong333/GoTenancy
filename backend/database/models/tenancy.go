@@ -13,7 +13,9 @@ import (
 type Tenancy struct {
 	gorm.Model
 
-	Name string `gorm:"not null VARCHAR(191)"`
+	Name  string `gorm:"not null VARCHAR(191)"`
+	Users []User `gorm:"foreignkey:TenancyID"`
+	Apps  []*App `gorm:"many2many:tenancy_apps;"`
 }
 
 func NewTenancy(id uint, name string) *Tenancy {

@@ -185,5 +185,5 @@ func AutoMigrate() {
 
 // 删除数据表
 func DropTables() {
-	database.GetGdb().DropTable("users", "roles", "permissions", "oauth_tokens", "casbin_rule")
+	database.GetGdb().DropTable("users", "roles", "permissions", "oauth_tokens", "casbin_rule", "admins", "apps", "tenancies")
 }
