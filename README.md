@@ -13,8 +13,7 @@
 - 基于 `iris-go` 框架开发,`gorm` 数据库模块 ,`jwt` 的单点登陆认证方式, `cors` 跨域认证
 - 数据支持 `mysql`，`sqlite3` 配置; `sqlite3` 需要下载 `gcc`  [gcc 下载地址](http://mingw-w64.org/doku.php/download)
 - 使用了 [https://github.com/snowlyg/gotransformer](https://github.com/snowlyg/gotransformer) 转换数据，返回数据格式化，excel 导入数据转换，xml 文件生产数据转换等 
-- 增加了 `excel` 文件接口导入实例
-- 前端采用了 `element-ui` 框架,代码集成到 `front` 目录
+- 租户端前端采用了 `element-ui` 框架,代码集成到 `front` 目录
 - 使用 `casbin` 做权限控制, `./backendconfig/rbac_model.conf` 为相关配置。系统会根据路由名称生成对应路由权限，并配置到管理员角色。
 - 增加系统日志记录 `./backend/logs` 文件夹下，自定义记录，控制器内 `ctx.Application().Logger().Infof("%s 登录系统",aul.Username)`
 - 默认数据库设置为   `DriverType = "Sqlite"` ，使用 mysql 需要修改为 `DriverType = "Mysql"` ,在 `./backendconfig/conf.tml` 文件中
@@ -26,9 +25,35 @@
  - 更新代码后，如果启动报错，请尝试手动删所有数据表后重启。
 
 ---
+#### 项目目录结构
+- backend 后台项目目录，项目启动目录
+    - config 项目配置目录
+    - controllers 控制器目录
+    - database 数据处理相关目录
+        - models 数据模型目录
+        - repositories 
+        - services 
+    - files 文件处理目录
+    - libs 公用函数目录
+    - logs 日志记录目录
+    - middleware 中间件目录
+    - redis redis目录(用于session)
+    - resources 前端文件目录
+        - admin 管理端前端代码目录
+        - apiDoc 租户端接口文档目录
+        - app 租户端前端代码目录（front 目录打包生成）
+        - doc  管理端前端源代码文档目录
+        - shared  管理端前端模板文件目录
+    - routepath api路径获取目录
+    - routes 路由相关目录
+    - session session相关目录
+    - tasks 定时任务目录
+    - tmp sqlite文件目录
+    - transformer 数据格式化目录
+    - validates 表单数据验证目录
+- front 租户端前端代码目录，采用了 `element-ui` 框架
 
 ---
-
 
 #### 更新日志
 [更新日志](UPDATE.MD)
@@ -41,8 +66,6 @@
 
 #### 所用依赖包
 [所用依赖包](PLUGINS.MD)
-
-
 
 #### 项目初始化
 
@@ -68,10 +91,10 @@ go env -w GOPROXY=https://goproxy.cn,direct
 >项目配置文件 /backend/config/conf.tml
 
 ```shell script
-cp conf.tml.example conf.tml
+cp backend/conf.tml.example backend/conf.tml
 ```
 
->打包前端代码 
+>打包租户端前端代码 
 ```shell script
  cd front // 进入前端代码目录
  npm install  //加载依赖
